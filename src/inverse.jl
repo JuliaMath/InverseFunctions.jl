@@ -1,47 +1,53 @@
 # This file is a part of InverseFunctions.jl, licensed under the MIT License (MIT).
 
-
 """
     inverse(f)
 
-Returns the inverse of a function `f`.
+Return the inverse of function `f`.
 
-The following conditions must be satisfied:
+`inverse` supports mapped and broadcasted functions (via `Base.Fix1`) and
+function composition (requires Julia >= 1.6).
 
-* `inverse(f) ∘ f` must be equivalent to `identity`.
-* `inverse(f)(f(x)) ≈ x`
-* `inverse(inverse(f))` must be equivalent (ideally identical) to `f`.
+# Examples
 
-`inverse` supports mapped/broadcasted functions (via `Base.Fix1`) and (on
-Julia >=v1.6) function composition.
+```jldoctest
+julia> foo(x) = inv(exp(-x) + 1);
 
+julia> inv_foo(y) = log(y / (1 - y));
 
-Example:
+julia> InverseFunctions.inverse(::typeof(foo)) = inv_foo;
 
-```julia
-foo(x) = inv(exp(-x) + 1)
-inv_foo(y) = log(y / (1 - y))
+julia> InverseFunctions.inverse(::typeof(inv_foo)) = foo;
 
-InverseFunctions.inverse(::typeof(foo)) = inv_foo
-InverseFunctions.inverse(::typeof(inv_foo)) = foo
+julia> x = 4.2;
 
-x = 4.2
-@assert inverse(foo)(foo(x)) ≈ x
-@assert inverse(inverse(foo)) == foo
+julia> inverse(foo)(foo(x)) ≈ x
+true
 
-X = rand(10)
-broadcasted_foo = Base.Fix1(broadcast, foo)
-Y = broadcasted_foo(X)
-@assert inverse(broadcasted_foo)(Y) ≈ X
+julia> inverse(inverse(foo)) === foo
+true
 
-# Requires Julia >= v1.6:
-bar = log ∘ foo
-@assert inverse(bar)(bar(x)) ≈ x
+julia> broadcast_foo = Base.Fix1(broadcast, foo);
+
+julia> X = rand(10);
+
+julia> inverse(broadcast_foo)(broadcast_foo(X)) ≈ X
+true
+
+julia> bar = log ∘ foo;
+
+julia> VERSION < v"1.6" || inverse(bar)(bar(x)) ≈ x
+true
 ```
-"""
-function inverse end
-export inverse
 
+# Implementation
+
+Implementations of `inverse(::typeof(f))` have to satisfy
+* `inverse(f)(f(x)) ≈ x` for all `x` in the domain of `f`, and
+* `inverse(inverse(f)) === f`.
+"""
+inverse(f)
+export inverse
 
 inverse(::typeof(inverse)) = inverse
 
@@ -55,7 +61,6 @@ inverse(::typeof(identity)) = identity
 inverse(::typeof(inv)) = inv
 inverse(::typeof(adjoint)) = adjoint
 inverse(::typeof(transpose)) = transpose
-
 
 inverse(::typeof(exp)) = log
 inverse(::typeof(log)) = exp

@@ -7,6 +7,14 @@
 using Documenter
 using InverseFunctions
 
+# Doctest setup
+DocMeta.setdocmeta!(
+    InverseFunctions,
+    :DocTestSetup,
+    :(using InverseFunctions);
+    recursive=true,
+)
+
 makedocs(
     sitename = "InverseFunctions",
     modules = [InverseFunctions],

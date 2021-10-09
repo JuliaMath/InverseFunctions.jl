@@ -1,7 +1,4 @@
 # This file is a part of InverseFunctions.jl, licensed under the MIT License (MIT).
-
-__precompile__(true)
-
 """
     InverseFunctions
 
