@@ -2,7 +2,7 @@ The InverseFunctions.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2021:
 >
->    Oliver Schulz <oschulz@mpp.mpg.de>
+>    Oliver Schulz <oschulz@mpp.mpg.de> and David Widmann
 > 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
