@@ -1,7 +1,18 @@
 # This file is a part of InverseFunctions.jl, licensed under the MIT License (MIT).
 
-import Test
+using InverseFunctions
+using Documenter
+using Test
 
-Test.@testset "Package InverseFunctions" begin
+@testset "Package InverseFunctions" begin
     include("test_inverse.jl")
+
+    # doctests
+    DocMeta.setdocmeta!(
+        InverseFunctions,
+        :DocTestSetup,
+        :(using InverseFunctions);
+        recursive=true,
+    )
+    doctest(InverseFunctions)
 end # testset
