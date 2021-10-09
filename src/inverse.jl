@@ -36,7 +36,7 @@ true
 
 julia> bar = log ∘ foo;
 
-julia> VERSION < 1.6 || inverse(bar)(bar(x)) ≈ x
+julia> VERSION < v1.6 || inverse(bar)(bar(x)) ≈ x
 true
 ```
 
