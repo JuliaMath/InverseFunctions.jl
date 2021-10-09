@@ -47,7 +47,6 @@ Implementations of `inverse(::typeof(f))` have to satisfy
 * `inverse(inverse(f)) === f`.
 """
 inverse(f)
-export inverse
 
 inverse(::typeof(inverse)) = inverse
 
