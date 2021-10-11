@@ -12,7 +12,7 @@ All keyword arguments are passed to `isapprox`.
 function test_inverse(f, x; kwargs...)
     @testset "test_inverse: $f with input $x" begin
         inverse_f = inverse(f)
-        @test isapprox(inverse_f(f(x)), x; kwargs...)
+        @test (x2 = inverse_f(f(x)); x2 == x || isapprox(inverse_f(f(x)), x; kwargs...))
         @test inverse(inverse_f) === f
     end
     return nothing
