@@ -1,32 +1,13 @@
 # API
 
-```@meta
-DocTestSetup  = quote
-    using InverseFunctions
-end
+## Interface
+
+```@docs
+inverse
 ```
 
-## Modules
+## Test utility
 
-```@index
-Order = [:module]
-```
-
-## Types and constants
-
-```@index
-Order = [:type, :constant]
-```
-
-## Functions and macros
-
-```@index
-Order = [:macro, :function]
-```
-
-# Documentation
-
-```@autodocs
-Modules = [InverseFunctions]
-Order = [:module, :type, :constant, :macro, :function]
+```@docs
+InverseFunctions.test_inverse
 ```

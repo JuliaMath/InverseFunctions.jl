@@ -1,5 +1,9 @@
 # InverseFunctions.jl
 
+```@docs
+InverseFunctions
+```
+
 This package defines the function [`inverse`](@ref). `inverse(f)` returns the inverse function of a function `f`, so that `inverse(f)(f(x)) ≈ x`.
 
 `inverse` supports mapped/broadcasted functions (via `Base.Fix1`) and (on Julia >=v1.6) function composition.
