@@ -45,6 +45,8 @@ true
 Implementations of `inverse(::typeof(f))` have to satisfy
 * `inverse(f)(f(x)) ≈ x` for all `x` in the domain of `f`, and
 * `inverse(inverse(f)) === f`.
+
+You can check your implementation with [`InverseFunctions.test_inverse`](@ref).
 """
 inverse(f)
 export inverse
