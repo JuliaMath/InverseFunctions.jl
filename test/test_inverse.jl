@@ -7,6 +7,8 @@ InverseFunctions.inverse(::typeof(foo)) = inv_foo
 InverseFunctions.inverse(::typeof(inv_foo)) = foo
 
 @testset "inverse" begin
+    InverseFunctions.test_inverse(inverse, log)
+
     x = rand()
     for f in (foo, inv_foo, exp, log, exp2, log2, exp10, log10, expm1, log1p)
         InverseFunctions.test_inverse(f, x)
