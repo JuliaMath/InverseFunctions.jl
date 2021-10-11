@@ -3,13 +3,13 @@ uuid = "3587e190-3f89-42d0-90ee-14403ec27112"
 version = "0.1.0"
 
 [deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 julia = "1"
 
 [extras]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Documenter", "Test"]
+test = ["Documenter"]
