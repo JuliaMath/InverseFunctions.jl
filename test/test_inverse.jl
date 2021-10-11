@@ -1,5 +1,9 @@
 # This file is a part of InverseFunctions.jl, licensed under the MIT License (MIT).
 
+using Test
+using InverseFunctions
+
+
 foo(x) = inv(exp(-x) + 1)
 inv_foo(y) = log(y / (1 - y))
 
