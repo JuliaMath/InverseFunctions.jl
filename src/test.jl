@@ -1,19 +1,28 @@
 """
-    InverseFunctions.test_inverse(f, x; kwargs...)
+    InverseFunctions.test_inverse(f, x; inv_inv_test = ===, kwargs...)
 
 Check if [`inverse(f)`](@ref) is implemented correctly.
 
 The function checks if
 - `inverse(f)(f(x)) ≈ x` and
-- `inverse(inverse(f)) === f`.
+- `inv_inv_test(inverse(inverse(f)), f)`.
 
-All keyword arguments are passed to `isapprox`.
+With `inv_inv_test = ≈`, tests if the result of `inverse(inverse(f))(x)`
+is equal or approximately equal to `f(x)`.
+
+`kwargs...` are passed to `isapprox`.
 """
-function test_inverse(f, x; kwargs...)
+function test_inverse(f, x; inv_inv_test = ===, kwargs...)
     @testset "test_inverse: $f with input $x" begin
-        inverse_f = inverse(f)
-        @test (x2 = inverse_f(f(x)); x2 == x || isapprox(inverse_f(f(x)), x; kwargs...))
-        @test inverse(inverse_f) === f
+        y = f(x)
+        @test (x2 = inverse(f)(y); x2 == x || isapprox(x2, x; kwargs...))
+        @test let inv_inv_f = inverse(inverse(f))
+            if inv_inv_test == ≈
+                (y2 = inv_inv_f(x); y2 == y || isapprox(y2, y; kwargs...))
+            else
+                inv_inv_test(inv_inv_f, f)
+            end
+        end
     end
     return nothing
 end

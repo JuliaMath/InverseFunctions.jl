@@ -10,6 +10,15 @@ inv_foo(y) = log(y / (1 - y))
 InverseFunctions.inverse(::typeof(foo)) = inv_foo
 InverseFunctions.inverse(::typeof(inv_foo)) = foo
 
+
+struct Bar{MT<:AbstractMatrix}
+    A::MT
+end
+
+(f::Bar)(x) = f.A * x
+InverseFunctions.inverse(f) = Bar(inv(f.A))
+
+
 @testset "inverse" begin
     InverseFunctions.test_inverse(inverse, log)
 
@@ -29,6 +38,8 @@ InverseFunctions.inverse(::typeof(inv_foo)) = foo
             InverseFunctions.test_inverse(f, x)
         end
     end
+
+    InverseFunctions.test_inverse(Bar(rand(3,3)), rand(3), inv_inv_test = ≈)
 
     @static if VERSION >= v"1.6"
         InverseFunctions.test_inverse(log ∘ foo, x)
