@@ -20,7 +20,7 @@ makedocs(
     modules = [InverseFunctions],
     format = Documenter.HTML(
         prettyurls = !("local" in ARGS),
-        canonical = "https://oschulz.github.io/InverseFunctions.jl/stable/"
+        canonical = "https://JuliaMath.github.io/InverseFunctions.jl/stable/"
     ),
     pages = [
         "Home" => "index.md",
@@ -33,7 +33,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/oschulz/InverseFunctions.jl.git",
+    repo = "github.com/JuliaMath/InverseFunctions.jl.git",
     forcepush = true,
     push_preview = true,
 )
