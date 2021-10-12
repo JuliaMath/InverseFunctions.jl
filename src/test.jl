@@ -1,28 +1,22 @@
 """
-    InverseFunctions.test_inverse(f, x; inv_inv_test = ===, kwargs...)
+    InverseFunctions.test_inverse(f, x; compare=isapprox, kwargs...)
 
-Check if [`inverse(f)`](@ref) is implemented correctly.
+Test if [`inverse(f)`](@ref) is implemented correctly.
 
-The function checks if
-- `inverse(f)(f(x)) ≈ x` and
-- `inv_inv_test(inverse(inverse(f)), f)`.
+The function tests (as a `Test.@testset`) if
 
-With `inv_inv_test = ≈`, tests if the result of `inverse(inverse(f))(x)`
-is equal or approximately equal to `f(x)`.
+* `compare(inverse(f)(f(x)), x) == true` and
+* `compare(inverse(inverse(f))(x), f(x)) == true`.
 
-`kwargs...` are passed to `isapprox`.
+`kwargs...` are forwarded to `compare`.
 """
-function test_inverse(f, x; inv_inv_test = ===, kwargs...)
+function test_inverse(f, x; compare=isapprox, kwargs...)
     @testset "test_inverse: $f with input $x" begin
         y = f(x)
-        @test (x2 = inverse(f)(y); x2 == x || isapprox(x2, x; kwargs...))
-        @test let inv_inv_f = inverse(inverse(f))
-            if inv_inv_test == ≈
-                (y2 = inv_inv_f(x); y2 == y || isapprox(y2, y; kwargs...))
-            else
-                inv_inv_test(inv_inv_f, f)
-            end
-        end
+        inverse_f = inverse(f)
+        @test compare(inverse_f(y), x; kwargs...)
+        inverse_inverse_f = inverse(inverse_f)
+        @test compare(inverse_inverse_f(x), y; kwargs...)
     end
     return nothing
 end

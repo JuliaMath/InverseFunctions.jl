@@ -20,7 +20,7 @@ InverseFunctions.inverse(f) = Bar(inv(f.A))
 
 
 @testset "inverse" begin
-    InverseFunctions.test_inverse(inverse, log)
+    InverseFunctions.test_inverse(inverse, log, compare = ===)
 
     x = rand()
     for f in (foo, inv_foo, exp, log, exp2, log2, exp10, log10, expm1, log1p)
@@ -39,7 +39,7 @@ InverseFunctions.inverse(f) = Bar(inv(f.A))
         end
     end
 
-    InverseFunctions.test_inverse(Bar(rand(3,3)), rand(3), inv_inv_test = ≈)
+    InverseFunctions.test_inverse(Bar(rand(3,3)), rand(3))
 
     @static if VERSION >= v"1.6"
         InverseFunctions.test_inverse(log ∘ foo, x)
