@@ -45,7 +45,7 @@ true
 Implementations of `inverse(::typeof(f))` have to satisfy
 
 * `inverse(f)(f(x)) ≈ x` for all `x` in the domain of `f`, and
-* `inverse(inverse(f))` is equivalent (ideally identical/equal) to `f`.
+* `inverse(inverse(f))` is defined and `inverse(inverse(f))(x) ≈ f(x)` for all `x` in the domain of `f`.
 
 You can check your implementation with [`InverseFunctions.test_inverse`](@ref).
 """
