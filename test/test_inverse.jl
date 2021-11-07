@@ -23,7 +23,7 @@ InverseFunctions.inverse(f) = Bar(inv(f.A))
     InverseFunctions.test_inverse(inverse, log, compare = ===)
 
     x = rand()
-    for f in (foo, inv_foo, exp, log, exp2, log2, exp10, log10, expm1, log1p)
+    for f in (foo, inv_foo, exp, log, exp2, log2, exp10, log10, expm1, log1p, sqrt)
         InverseFunctions.test_inverse(f, x)
     end
 

@@ -11,3 +11,9 @@ inverse
 ```@docs
 InverseFunctions.test_inverse
 ```
+
+## Additional functions
+
+```@docs
+InverseFunctions.square
+```

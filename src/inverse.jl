@@ -76,3 +76,6 @@ inverse(::typeof(log10)) = exp10
 
 inverse(::typeof(expm1)) = log1p
 inverse(::typeof(log1p)) = expm1
+
+inverse(::typeof(sqrt)) = square
+inverse(::typeof(square)) = sqrt

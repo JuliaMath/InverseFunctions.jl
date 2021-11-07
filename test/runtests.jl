@@ -5,6 +5,7 @@ import InverseFunctions
 import Documenter
 
 Test.@testset "Package InverseFunctions" begin
+    include("test_functions.jl")
     include("test_inverse.jl")
 
     # doctests

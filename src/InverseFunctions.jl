@@ -8,6 +8,7 @@ module InverseFunctions
 
 using Test
 
+include("functions.jl")
 include("inverse.jl")
 include("test.jl")
 
