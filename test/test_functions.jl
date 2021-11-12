@@ -5,7 +5,9 @@ using InverseFunctions
 
 
 @testset "square" begin
-    for x in (-0.72, 0.73, randn(3, 3))
+    for x in (0.0, 0.73)
         @test InverseFunctions.square(x) ≈ x * x
     end
+
+    @test_throws DomainError InverseFunctions.square(-1)
 end
