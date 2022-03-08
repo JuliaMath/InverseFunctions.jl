@@ -16,7 +16,7 @@ struct Bar{MT<:AbstractMatrix}
 end
 
 (f::Bar)(x) = f.A * x
-InverseFunctions.inverse(f) = Bar(inv(f.A))
+InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
 
 @testset "inverse" begin
