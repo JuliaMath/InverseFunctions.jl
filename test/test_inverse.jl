@@ -20,6 +20,12 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
 
 @testset "inverse" begin
+    f_without_inverse(x) = x^2
+    @test inverse(f_without_inverse) isa NoInverse
+    @test_throws ErrorException inverse(f_without_inverse)(42)
+    @test inverse(inverse(f_without_inverse)) === f_without_inverse
+
+
     InverseFunctions.test_inverse(inverse, log, compare = ===)
 
     x = rand()

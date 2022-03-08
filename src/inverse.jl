@@ -52,6 +52,27 @@ You can check your implementation with [`InverseFunctions.test_inverse`](@ref).
 inverse(f)
 export inverse
 
+
+
+"""
+    struct NoInverse{F}
+
+An instance `NoInverse(f)` signifies that that `inverse(f)` is not
+defined.
+"""
+struct NoInverse{F}
+    f::F
+end
+export NoInverse
+
+(f::NoInverse)(x) = error("inverse of ", f.f, " is not defined")
+
+inverse(f) = NoInverse(f)
+
+inverse(f::NoInverse) = f.f
+
+
+
 inverse(::typeof(inverse)) = inverse
 
 @static if VERSION >= v"1.6"

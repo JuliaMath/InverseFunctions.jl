@@ -4,6 +4,7 @@
 
 ```@docs
 inverse
+NoInverse
 ```
 
 ## Test utility
