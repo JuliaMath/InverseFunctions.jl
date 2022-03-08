@@ -5,6 +5,7 @@
 
 Inverse of `sqrt(x)` for non-negative `x`.
 """
+square(x) = x^2
 function square(x::Real)
     x < zero(x) && throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative values"))
     return x^2
