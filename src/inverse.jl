@@ -80,7 +80,7 @@ end
 
 inverse(mapped_f::Base.Fix1{<:Union{typeof(map),typeof(broadcast)}}) = Base.Fix1(mapped_f.f, inverse(mapped_f.x))
 
-# Idempotent functions
+# Involutions
 inverse(::typeof(identity)) = identity
 inverse(::typeof(inv)) = inv
 inverse(::typeof(adjoint)) = adjoint
