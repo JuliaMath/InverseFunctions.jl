@@ -80,22 +80,20 @@ end
 
 inverse(mapped_f::Base.Fix1{<:Union{typeof(map),typeof(broadcast)}}) = Base.Fix1(mapped_f.f, inverse(mapped_f.x))
 
+# Idempotent functions
 inverse(::typeof(identity)) = identity
 inverse(::typeof(inv)) = inv
 inverse(::typeof(adjoint)) = adjoint
 inverse(::typeof(transpose)) = transpose
 
-inverse(::typeof(exp)) = log
-inverse(::typeof(log)) = exp
+# Inverses of functions in Base
+inverse_pairs = (exp => log,
+                 exp2 => log2,
+                 exp10 => log10,
+                 expm1 => log1p,
+                 square => sqrt)
+for op_pair in inverse_pairs
+    @eval inverse(::typeof($op_pair.first)) = $op_pair.second
+    @eval inverse(::typeof($op_pair.second)) = $op_pair.first
+end
 
-inverse(::typeof(exp2)) = log2
-inverse(::typeof(log2)) = exp2
-
-inverse(::typeof(exp10)) = log10
-inverse(::typeof(log10)) = exp10
-
-inverse(::typeof(expm1)) = log1p
-inverse(::typeof(log1p)) = expm1
-
-inverse(::typeof(sqrt)) = square
-inverse(::typeof(square)) = sqrt
