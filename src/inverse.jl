@@ -85,6 +85,9 @@ inverse(::typeof(inv)) = inv
 inverse(::typeof(adjoint)) = adjoint
 inverse(::typeof(transpose)) = transpose
 
+inverse(::typeof(+)) = +
+inverse(::typeof(-)) = -
+
 inverse(::typeof(exp)) = log
 inverse(::typeof(log)) = exp
 
