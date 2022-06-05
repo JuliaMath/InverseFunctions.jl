@@ -84,9 +84,25 @@ inverse(::typeof(identity)) = identity
 inverse(::typeof(inv)) = inv
 inverse(::typeof(adjoint)) = adjoint
 inverse(::typeof(transpose)) = transpose
+inverse(::typeof(conj)) = conj
 
+inverse(::typeof(!)) = !
 inverse(::typeof(+)) = +
 inverse(::typeof(-)) = -
+
+inverse(f::Base.Fix1{typeof(+)}) = Base.Fix2(-, f.x)
+inverse(f::Base.Fix2{typeof(+)}) = Base.Fix2(-, f.x)
+inverse(f::Base.Fix1{typeof(-)}) = Base.Fix1(-, f.x)
+inverse(f::Base.Fix2{typeof(-)}) = Base.Fix1(+, f.x)
+inverse(f::Base.Fix1{typeof(*)}) = iszero(f.x) ? throw(DomainError(f.x, "Cannot invert multiplication by zero")) : Base.Fix1(\, f.x)
+inverse(f::Base.Fix2{typeof(*)}) = iszero(f.x) ? throw(DomainError(f.x, "Cannot invert multiplication by zero")) : Base.Fix2(/, f.x)
+inverse(f::Base.Fix1{typeof(/)}) = Base.Fix2(\, f.x)
+inverse(f::Base.Fix2{typeof(/)}) = Base.Fix2(*, f.x)
+inverse(f::Base.Fix1{typeof(\)}) = Base.Fix1(*, f.x)
+inverse(f::Base.Fix2{typeof(\)}) = Base.Fix1(/, f.x)
+
+inverse(::typeof(deg2rad)) = rad2deg
+inverse(::typeof(rad2deg)) = deg2rad
 
 inverse(::typeof(exp)) = log
 inverse(::typeof(log)) = exp
@@ -102,3 +118,13 @@ inverse(::typeof(log1p)) = expm1
 
 inverse(::typeof(sqrt)) = square
 inverse(::typeof(square)) = sqrt
+
+inverse(::typeof(cbrt)) = Base.Fix2(^, 3)
+inverse(f::Base.Fix2{typeof(^)}) = iszero(f.x) ? throw(DomainError(f.x, "Cannot invert x^$(f.x)")) : Base.Fix2(invpow2, f.x)
+inverse(f::Base.Fix2{typeof(invpow2)}) = Base.Fix2(^, f.x)
+inverse(f::Base.Fix1{typeof(^)}) = Base.Fix1(invpow1, f.x)
+inverse(f::Base.Fix1{typeof(invpow1)}) = Base.Fix1(^, f.x)
+inverse(f::Base.Fix1{typeof(log)}) = Base.Fix1(invlog1, f.x)
+inverse(f::Base.Fix1{typeof(invlog1)}) = Base.Fix1(log, f.x)
+inverse(f::Base.Fix2{typeof(log)}) = Base.Fix2(invlog2, f.x)
+inverse(f::Base.Fix2{typeof(invlog2)}) = Base.Fix2(log, f.x)
