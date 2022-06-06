@@ -65,7 +65,10 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
             Base.Fix2(/, rand()), Base.Fix1(/, rand(5, 5)), Base.Fix2(/, rand(5, 5)),
             Base.Fix1(\, rand()), Base.Fix1(\, rand(5, 5)), Base.Fix2(\, rand(5, 5)),
         )
-        InverseFunctions.test_inverse(f, A)
+        if f != log || VERSION >= v"1.6"
+            # exp(log(A::AbstractMatrix)) ≈ A is broken on at least Julia v1.0
+            InverseFunctions.test_inverse(f, A)
+        end
     end
 
     X = rand(5)
