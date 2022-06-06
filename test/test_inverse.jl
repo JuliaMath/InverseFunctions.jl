@@ -28,13 +28,43 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
     InverseFunctions.test_inverse(inverse, log, compare = ===)
 
+    InverseFunctions.test_inverse(!, false)
+
     x = rand()
-    for f in (foo, inv_foo, +, -, exp, log, exp2, log2, exp10, log10, expm1, log1p, sqrt)
+    for f in (
+            foo, inv_foo, log, log2, log10, log1p, sqrt,
+            Base.Fix2(^, rand()), Base.Fix2(^, rand([-10:-1; 1:10])), Base.Fix1(^, rand()), Base.Fix1(log, rand()), Base.Fix2(log, rand()),
+        )
         InverseFunctions.test_inverse(f, x)
     end
+    for f in (
+            +, -, exp, exp2, exp10, expm1, cbrt, deg2rad, rad2deg, conj,
+            Base.Fix1(+, rand()), Base.Fix2(+, rand()), Base.Fix1(-, rand()), Base.Fix2(-, rand()),
+            Base.Fix1(*, rand()), Base.Fix2(*, rand()), Base.Fix1(/, rand()), Base.Fix2(/, rand()), Base.Fix1(\, rand()), Base.Fix2(\, rand()),
+            Base.Fix2(^, rand(-11:2:11)),
+        )
+        InverseFunctions.test_inverse(f, x)
+        InverseFunctions.test_inverse(f, -x)
+    end
+    InverseFunctions.test_inverse(conj, 2 - 3im)
+
+    # ensure that inverses have domains compatible with original functions
+    @test_throws DomainError inverse(Base.Fix1(*, 0))
+    @test_throws DomainError inverse(Base.Fix2(^, 0))
+    @test_throws DomainError inverse(Base.Fix1(log, 2))(-5)
+    InverseFunctions.test_inverse(Base.Fix1(log, 2), -5 + 0im)
+    @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
+    InverseFunctions.test_inverse(Base.Fix2(^, 0.5), -5 + 0im)
 
     A = rand(5, 5)
-    for f in (identity, inv, adjoint, transpose)
+    for f in (
+            identity, inv, adjoint, transpose,
+            log, sqrt, +, -, exp,
+            Base.Fix1(+, rand(5, 5)), Base.Fix2(+, rand(5, 5)), Base.Fix1(-, rand(5, 5)), Base.Fix2(-, rand(5, 5)),
+            Base.Fix1(*, rand()), Base.Fix2(*, rand()), Base.Fix1(*, rand(5, 5)), Base.Fix2(*, rand(5, 5)),
+            Base.Fix2(/, rand()), Base.Fix1(/, rand(5, 5)), Base.Fix2(/, rand(5, 5)),
+            Base.Fix1(\, rand()), Base.Fix1(\, rand(5, 5)), Base.Fix2(\, rand(5, 5)),
+        )
         InverseFunctions.test_inverse(f, A)
     end
 
