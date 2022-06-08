@@ -75,10 +75,25 @@ inverse(f::NoInverse) = f.f
 inverse(::typeof(inverse)) = inverse
 
 @static if VERSION >= v"1.6"
-    inverse(f::Base.ComposedFunction) = Base.ComposedFunction(inverse(f.inner), inverse(f.outer))
+    function inverse(f::Base.ComposedFunction)
+        inv_inner = inverse(f.inner)
+        inv_outer = inverse(f.outer)
+        if inv_inner isa NoInverse || inv_outer isa NoInverse
+            NoInverse(f)
+        else
+            Base.ComposedFunction(inv_inner, inv_outer)
+        end
+    end
 end
 
-inverse(mapped_f::Base.Fix1{<:Union{typeof(map),typeof(broadcast)}}) = Base.Fix1(mapped_f.f, inverse(mapped_f.x))
+function inverse(mapped_f::Base.Fix1{<:Union{typeof(map),typeof(broadcast)}})
+    inv_f_kernel = inverse(mapped_f.x)
+    if inv_f_kernel isa NoInverse
+        NoInverse(mapped_f)
+    else
+        Base.Fix1(mapped_f.f, inverse(mapped_f.x))
+    end
+end
 
 inverse(::typeof(identity)) = identity
 inverse(::typeof(inv)) = inv

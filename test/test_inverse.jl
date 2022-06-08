@@ -20,11 +20,15 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
 
 @testset "inverse" begin
-    f_without_inverse(x) = x^2
+    f_without_inverse(x) = 1
     @test inverse(f_without_inverse) isa NoInverse
     @test_throws ErrorException inverse(f_without_inverse)(42)
     @test inverse(inverse(f_without_inverse)) === f_without_inverse
 
+    for f in (f_without_inverse ∘ exp, exp ∘ f_without_inverse, Base.Fix1(broadcast, f_without_inverse), Base.Fix1(map, f_without_inverse))
+        @test inverse(f) == NoInverse(f)
+        @test inverse(inverse(f)) == f
+    end
 
     InverseFunctions.test_inverse(inverse, log, compare = ===)
 
