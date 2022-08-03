@@ -143,3 +143,62 @@ inverse(f::Base.Fix1{typeof(log)}) = Base.Fix1(invlog1, f.x)
 inverse(f::Base.Fix1{typeof(invlog1)}) = Base.Fix1(log, f.x)
 inverse(f::Base.Fix2{typeof(log)}) = Base.Fix2(invlog2, f.x)
 inverse(f::Base.Fix2{typeof(invlog2)}) = Base.Fix2(log, f.x)
+
+inverse(::typeof(sin)) = asin
+inverse(::typeof(cos)) = acos
+inverse(::typeof(tan)) = atan
+inverse(::typeof(csc)) = acsc
+inverse(::typeof(sec)) = asec
+inverse(::typeof(cot)) = acot
+
+inverse(::typeof(asin)) = sin
+inverse(::typeof(acos)) = cos
+inverse(::typeof(atan)) = tan
+inverse(::typeof(acsc)) = csc
+inverse(::typeof(asec)) = sec
+inverse(::typeof(acot)) = cot
+
+inverse(::typeof(sinh)) = asin
+inverse(::typeof(cosh)) = acos
+inverse(::typeof(tanh)) = atan
+inverse(::typeof(csch)) = acsc
+inverse(::typeof(sech)) = asec
+inverse(::typeof(coth)) = acot
+
+inverse(::typeof(asinh)) = sinh
+inverse(::typeof(acosh)) = cosh
+inverse(::typeof(atanh)) = tanh
+inverse(::typeof(acsch)) = csch
+inverse(::typeof(asech)) = sech
+inverse(::typeof(acoth)) = coth
+
+inverse(f::Base.Fix1{typeof(sin)}) = Base.Fix1(asin, f.x)
+inverse(f::Base.Fix1{typeof(cos)}) = Base.Fix1(acos, f.x)
+inverse(f::Base.Fix1{typeof(tan)}) = Base.Fix1(atan, f.x)
+inverse(f::Base.Fix1{typeof(csc)}) = Base.Fix1(acsc, f.x)
+inverse(f::Base.Fix1{typeof(sec)}) = Base.Fix1(asec, f.x)
+inverse(f::Base.Fix1{typeof(cot)}) = Base.Fix1(acot, f.x)
+    
+inverse(f::Base.Fix1{typeof(asin)}) = Base.Fix1(sin, f.x)
+inverse(f::Base.Fix1{typeof(acos)}) = Base.Fix1(cos, f.x)
+inverse(f::Base.Fix1{typeof(atan)}) = Base.Fix1(tan, f.x)
+inverse(f::Base.Fix1{typeof(acsc)}) = Base.Fix1(csc, f.x)
+inverse(f::Base.Fix1{typeof(asec)}) = Base.Fix1(sec, f.x)
+inverse(f::Base.Fix1{typeof(acot)}) = Base.Fix1(cot, f.x)
+
+inverse(f::Base.Fix1{typeof(sinh)}) = Base.Fix1(asinh, f.x)
+inverse(f::Base.Fix1{typeof(cosh)}) = Base.Fix1(acosh, f.x)
+inverse(f::Base.Fix1{typeof(tanh)}) = Base.Fix1(atanh, f.x)
+inverse(f::Base.Fix1{typeof(csch)}) = Base.Fix1(acsch, f.x)
+inverse(f::Base.Fix1{typeof(sech)}) = Base.Fix1(asech, f.x)
+inverse(f::Base.Fix1{typeof(coth)}) = Base.Fix1(acoth, f.x)
+    
+inverse(f::Base.Fix1{typeof(asinh)}) = Base.Fix1(sinh, f.x)
+inverse(f::Base.Fix1{typeof(acosh)}) = Base.Fix1(cosh, f.x)
+inverse(f::Base.Fix1{typeof(atanh)}) = Base.Fix1(tanh, f.x)
+inverse(f::Base.Fix1{typeof(acsch)}) = Base.Fix1(csch, f.x)
+inverse(f::Base.Fix1{typeof(asech)}) = Base.Fix1(sech, f.x)
+inverse(f::Base.Fix1{typeof(acoth)}) = Base.Fix1(coth, f.x)
+
+    
+  
