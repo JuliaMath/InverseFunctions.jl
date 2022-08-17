@@ -22,3 +22,15 @@ invlog1(b::Real, x::Real) = b ≥ zero(b) && x ≥ zero(x) ? b^x : throw(DomainE
 invlog1(b, x) = b^x
 
 invlog2(b, x) = x^inv(b)
+
+
+function invdivrem((q, r), divisor)
+    p = q * divisor
+    abs(r) ≤ abs(divisor) && p * r ≥ 0 || throw(DomainError((q, r), "inverse for divrem(x) is not defined at this point"))
+    p + r
+end
+
+function invfldmod((q, r), divisor)
+    abs(r) ≤ abs(divisor) && divisor * r ≥ 0 || throw(DomainError((q, r), "inverse for fldmod(x) is not defined at this point"))
+    q * divisor + r
+end
