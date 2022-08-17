@@ -12,11 +12,10 @@ function square(x::Real)
 end
 
 
-invpow2(x::Real, p::Integer) = sign(x) * abs(x)^inv(p)
+invpow2(x::Real, p::Integer) = x ≥ zero(x) || isodd(p) ? sign(x) * abs(x)^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
 invpow2(x::Real, p::Real) = x ≥ zero(x) ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
-invpow2(x, p) = x^inv(p)
 
-invpow1(b, x) = log(abs(b), abs(x))
+invpow1(b::Real, x::Real) = b ≥ zero(b) && x ≥ zero(x) ? log(b, x) : throw(DomainError(x, "inverse for $b^x is not defined at $x"))
 
 invlog1(b::Real, x::Real) = b ≥ zero(b) && x ≥ zero(x) ? b^x : throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
 invlog1(b, x) = b^x

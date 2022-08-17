@@ -58,7 +58,10 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test_throws DomainError inverse(Base.Fix1(log, 2))(-5)
     InverseFunctions.test_inverse(Base.Fix1(log, 2), -5 + 0im)
     @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
-    InverseFunctions.test_inverse(Base.Fix2(^, 0.5), -5 + 0im)
+    @test_throws DomainError inverse(Base.Fix2(^, 2))(-5)
+    @test_throws DomainError inverse(Base.Fix1(^, 2))(-5)
+    @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
+    @test inverse(Base.Fix1(^, 2))(0) == -Inf
 
     A = rand(5, 5)
     for f in (
