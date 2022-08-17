@@ -17,7 +17,7 @@ invpow2(x::Real, p::Real) = x ≥ zero(x) ? x^inv(p) : throw(DomainError(x, "inv
 
 invpow1(b::Real, x::Real) = b ≥ zero(b) && x ≥ zero(x) ? log(b, x) : throw(DomainError(x, "inverse for $b^x is not defined at $x"))
 
-invlog1(b::Real, x::Real) = b ≥ zero(b) && x ≥ zero(x) ? b^x : throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+invlog1(b::Real, x::Real) = b ≥ zero(b) ? b^x : throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
 invlog1(b, x) = b^x
 
 invlog2(b, x) = x^inv(b)
