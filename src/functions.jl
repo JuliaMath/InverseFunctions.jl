@@ -25,12 +25,14 @@ invlog2(b, x) = x^inv(b)
 
 
 function invdivrem((q, r), divisor)
-    p = q * divisor
-    abs(r) ≤ abs(divisor) && p * r ≥ 0 || throw(DomainError((q, r), "inverse for divrem(x) is not defined at this point"))
-    p + r
+    res = muladd(q, divisor, r)
+    abs(r) ≤ abs(divisor) && _issamesign(r, res) || throw(DomainError((q, r), "inverse for divrem(x) is not defined at this point"))
+    return res
 end
 
 function invfldmod((q, r), divisor)
-    abs(r) ≤ abs(divisor) && divisor * r ≥ 0 || throw(DomainError((q, r), "inverse for fldmod(x) is not defined at this point"))
-    q * divisor + r
+    abs(r) ≤ abs(divisor) && _issamesign(r, divisor) || throw(DomainError((q, r), "inverse for fldmod(x) is not defined at this point"))
+    return muladd(q, divisor, r)
 end
+
+_issamesign(x, y) = iszero(x) || iszero(y) || sign(x) == sign(y)

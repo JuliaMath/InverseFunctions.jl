@@ -53,9 +53,12 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     InverseFunctions.test_inverse(conj, 2 - 3im)
 
     x = rand(0:10)
-    for f in (Base.Fix2(divrem, rand([-5:-1; 1:5])), Base.Fix2(fldmod, rand([-5:-1; 1:5])))
-        InverseFunctions.test_inverse(f, x; compare=(==))
-        InverseFunctions.test_inverse(f, -x; compare=(==))
+    for f in (Base.Fix2(divrem, rand([-5:-1; 1:5])), Base.Fix2(fldmod, rand([-5:-1; 1:5])), Base.Fix2(divrem, 0.123), Base.Fix2(fldmod, 0.123))
+        compare = (a, b) -> all(isapprox.(a, b))
+        InverseFunctions.test_inverse(f, x; compare=compare)
+        InverseFunctions.test_inverse(f, -x; compare=compare)
+        InverseFunctions.test_inverse(f, x/9; compare=compare)
+        InverseFunctions.test_inverse(f, -x/9; compare=compare)
     end
 
     # ensure that inverses have domains compatible with original functions
@@ -66,10 +69,10 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
     InverseFunctions.test_inverse(Base.Fix2(^, 0.5), -5 + 0im)
 
-    @test inverse(Base.Fix2(divrem, 5))((-3, -2)) == -17
     @test_throws DomainError inverse(Base.Fix2(divrem, 5))((-3, 2))
     @test_throws DomainError inverse(Base.Fix2(fldmod, 5))((-3, -2))
-    @test inverse(Base.Fix2(fldmod, 5))((-3, 2)) == -13
+    InverseFunctions.test_inverse(inverse(Base.Fix2(divrem, 5)), (-3, -2); compare=(==))
+    InverseFunctions.test_inverse(inverse(Base.Fix2(fldmod, 5)), (-3, 2); compare=(==))
 
     A = rand(5, 5)
     for f in (
