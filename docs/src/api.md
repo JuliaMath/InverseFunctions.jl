@@ -5,6 +5,7 @@
 ```@docs
 inverse
 NoInverse
+setinverse
 ```
 
 ## Test utility
@@ -13,8 +14,9 @@ NoInverse
 InverseFunctions.test_inverse
 ```
 
-## Additional functions
+## Additional functionality
 
 ```@docs
 InverseFunctions.square
+InverseFunctions.FunctionWithInverse
 ```
