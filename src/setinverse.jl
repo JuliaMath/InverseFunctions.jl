@@ -22,7 +22,7 @@ inverse(f::FunctionWithInverse) = FunctionWithInverse(f.invf, f.f)
 """
     setinverse(f, invf)::Function
 
-Returns a function that behaves like `f` and uses `invf` it implement it's
+Returns a function that behaves like `f` and uses `invf` it implement its
 inverse.
 
 Useful in cases where no inverse is defined for `f` or to set an inverse that
