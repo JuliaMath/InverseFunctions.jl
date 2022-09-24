@@ -2,7 +2,7 @@
 
 
 """
-    struct FunctionWithInverse{F,InvF}::Function
+    struct FunctionWithInverse{F,InvF} <: Function
 
 A function with an inverse.
 
@@ -16,20 +16,19 @@ end
 
 (f::FunctionWithInverse)(x) = f.f(x)
 
-inverse(f::FunctionWithInverse) = FunctionWithInverse(f.invf, f.f)
+inverse(f::FunctionWithInverse) = setinverse(f.invf, f.f)
 
 
 """
-    setinverse(f, invf)::Function
+    setinverse(f, invf)
 
-Returns a function that behaves like `f` and uses `invf` it implement its
-inverse.
+Return a function that behaves like `f` and uses `invf` as its inverse.
 
 Useful in cases where no inverse is defined for `f` or to set an inverse that
-is only valid within a given context, e.g. for only for a limited argument
+is only valid within a given context, e.g. only for a limited argument
 range that is guaranteed by the use case but not in general.
 
-For example, `asin` not is a valid inverse of `sin` for arbitrary arguments
+For example, `asin` is not a valid inverse of `sin` for arbitrary arguments
 of `sin`, but can be a valid inverse if the use case guarantees that the
 argument of `sin` will always be within `-π` and `π`:
 
@@ -51,7 +50,6 @@ true
 function setinverse end
 export setinverse
 
-setinverse(f, invf) = FunctionWithInverse(f, invf)
-setinverse(f::FunctionWithInverse, invf) = FunctionWithInverse(f.f, invf)
-setinverse(f, invf::FunctionWithInverse) = FunctionWithInverse(f, invf.f)
-setinverse(f::FunctionWithInverse, invf::FunctionWithInverse) = FunctionWithInverse(f.f, invf.f)
+_unwrap_f(f) = f
+_unwrap_f(f::FunctionWithInverse) = f.f
+setinverse(f, invf) = FunctionWithInverse(_unwrap_f(f), _unwrap_f(invf))
