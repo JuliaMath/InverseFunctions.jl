@@ -47,9 +47,8 @@ julia> inverse(foo) === setinverse(asin, sin)
 true
 ```
 """
-function setinverse end
+setinverse(f, invf) = FunctionWithInverse(_unwrap_f(f), _unwrap_f(invf))
 export setinverse
 
 _unwrap_f(f) = f
 _unwrap_f(f::FunctionWithInverse) = f.f
-setinverse(f, invf) = FunctionWithInverse(_unwrap_f(f), _unwrap_f(invf))
