@@ -55,6 +55,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     # ensure that inverses have domains compatible with original functions
     @test_throws DomainError inverse(Base.Fix1(*, 0))
     @test_throws DomainError inverse(Base.Fix2(^, 0))
+    @test_throws DomainError inverse(Base.Fix1(log, -2))(5)
     @test_throws DomainError inverse(Base.Fix1(log, 2))(-5)
     InverseFunctions.test_inverse(inverse(Base.Fix1(log, 2)), complex(-5))
     @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
