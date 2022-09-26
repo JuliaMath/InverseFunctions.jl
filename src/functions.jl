@@ -12,13 +12,44 @@ function square(x::Real)
 end
 
 
-invpow2(x::Real, p::Integer) = sign(x) * abs(x)^inv(p)
-invpow2(x::Real, p::Real) = x ≥ zero(x) ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
-invpow2(x, p) = x^inv(p)
+function invpow2(x::Real, p::Integer)
+    if x ≥ zero(x) || isodd(p)
+        copysign(abs(x)^inv(p), x)
+    else
+        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
+    end
+end
+function invpow2(x::Real, p::Real)
+    if x ≥ zero(x)
+        x^inv(p)
+    else
+        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
+    end
+end
+function invpow2(x, p::Real)
+    # complex x^p is only invertible for p = 1/n
+    if isinteger(inv(p))
+        x^inv(p)
+    else
+        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
+    end
+end
 
-invpow1(b, x) = log(abs(b), abs(x))
+function invpow1(b::Real, x::Real)
+    if b ≥ zero(b) && x ≥ zero(x)
+        log(b, x)
+    else
+        throw(DomainError(x, "inverse for $b^x is not defined at $x"))
+    end
+end
 
-invlog1(b::Real, x::Real) = b ≥ zero(b) && x ≥ zero(x) ? b^x : throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+function invlog1(b::Real, x::Real)
+    if b ≥ zero(b)
+        b^x
+    else
+        throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+    end
+end
 invlog1(b, x) = b^x
 
 invlog2(b, x) = x^inv(b)
