@@ -53,3 +53,21 @@ end
 invlog1(b, x) = b^x
 
 invlog2(b, x) = x^inv(b)
+
+
+function invdivrem((q, r), divisor)
+    res = muladd(q, divisor, r)
+    if abs(r) ≤ abs(divisor) && (iszero(r) || sign(r) == sign(res))
+        res
+    else
+        throw(DomainError((q, r), "inverse for divrem(x) is not defined at this point"))
+    end
+end
+
+function invfldmod((q, r), divisor)
+    if abs(r) ≤ abs(divisor) && (iszero(r) || sign(r) == sign(divisor))
+        muladd(q, divisor, r)
+    else
+        throw(DomainError((q, r), "inverse for fldmod(x) is not defined at this point"))
+    end
+end

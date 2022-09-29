@@ -143,3 +143,8 @@ inverse(f::Base.Fix1{typeof(log)}) = Base.Fix1(invlog1, f.x)
 inverse(f::Base.Fix1{typeof(invlog1)}) = Base.Fix1(log, f.x)
 inverse(f::Base.Fix2{typeof(log)}) = Base.Fix2(invlog2, f.x)
 inverse(f::Base.Fix2{typeof(invlog2)}) = Base.Fix2(log, f.x)
+
+inverse(f::Base.Fix2{typeof(divrem)}) = Base.Fix2(invdivrem, f.x)
+inverse(f::Base.Fix2{typeof(invdivrem)}) = Base.Fix2(divrem, f.x)
+inverse(f::Base.Fix2{typeof(fldmod)}) = Base.Fix2(invfldmod, f.x)
+inverse(f::Base.Fix2{typeof(invfldmod)}) = Base.Fix2(fldmod, f.x)
