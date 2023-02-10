@@ -90,6 +90,9 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     InverseFunctions.test_inverse(inverse(Base.Fix2(divrem, 5)), (-3, -2); compare=(==))
     InverseFunctions.test_inverse(inverse(Base.Fix2(fldmod, 5)), (-3, 2); compare=(==))
 
+    InverseFunctions.test_inverse(reim, -3; compare=(==))
+    InverseFunctions.test_inverse(reim, -3+2im; compare=(==))
+
     A = rand(5, 5)
     for f in (
             identity, inv, adjoint, transpose,
