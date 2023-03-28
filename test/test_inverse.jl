@@ -20,12 +20,18 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
 
 @testset "inverse" begin
+    @static if VERSION >= v"1.6"
+        _bc_func(f) = Base.Broadcast.BroadcastFunction(f)
+    else
+        _bc_func(f) = Base.Fix1(broadcast, f)
+    end
+
     f_without_inverse(x) = 1
     @test inverse(f_without_inverse) isa NoInverse
     @test_throws ErrorException inverse(f_without_inverse)(42)
     @test inverse(inverse(f_without_inverse)) === f_without_inverse
 
-    for f in (f_without_inverse ∘ exp, exp ∘ f_without_inverse, Base.Fix1(broadcast, f_without_inverse), Base.Fix1(map, f_without_inverse))
+    for f in (f_without_inverse ∘ exp, exp ∘ f_without_inverse, _bc_func(f_without_inverse), Base.Fix1(broadcast, f_without_inverse), Base.Fix1(map, f_without_inverse))
         @test inverse(f) == NoInverse(f)
         @test inverse(inverse(f)) == f
     end
@@ -96,7 +102,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     end
 
     X = rand(5)
-    for f in (Base.Fix1(broadcast, foo), Base.Fix1(map, foo))
+    for f in (_bc_func(foo), Base.Fix1(broadcast, foo), Base.Fix1(map, foo))
         for x in (x, fill(x, 3), X)
             InverseFunctions.test_inverse(f, x)
         end

@@ -5,8 +5,9 @@
 
 Return the inverse of function `f`.
 
-`inverse` supports mapped and broadcasted functions (via `Base.Fix1`) and
-function composition (requires Julia >= 1.6).
+`inverse` supports mapped and broadcasted functions (via
+`Base.Broadcast.BroadcastFunction` or `Base.Fix1`) and function composition
+(requires Julia >= 1.6).
 
 # Examples
 
@@ -27,7 +28,7 @@ true
 julia> inverse(inverse(foo)) === foo
 true
 
-julia> broadcast_foo = Base.Fix1(broadcast, foo);
+julia> broadcast_foo = VERSION >= v"1.6" ? Base.Broadcast.BroadcastFunction(foo) : Base.Fix1(broadcast, foo);
 
 julia> X = rand(10);
 
@@ -84,6 +85,15 @@ inverse(::typeof(inverse)) = inverse
             Base.ComposedFunction(inv_inner, inv_outer)
         end
     end
+
+    function inverse(bf::Base.Broadcast.BroadcastFunction)
+        inv_f_kernel = inverse(bf.f)
+        if inv_f_kernel isa NoInverse
+            NoInverse(bf)
+        else
+            Base.Broadcast.BroadcastFunction(inv_f_kernel)
+        end
+    end
 end
 
 function inverse(mapped_f::Base.Fix1{<:Union{typeof(map),typeof(broadcast)}})
@@ -91,7 +101,7 @@ function inverse(mapped_f::Base.Fix1{<:Union{typeof(map),typeof(broadcast)}})
     if inv_f_kernel isa NoInverse
         NoInverse(mapped_f)
     else
-        Base.Fix1(mapped_f.f, inverse(mapped_f.x))
+        Base.Fix1(mapped_f.f, inv_f_kernel)
     end
 end
 
