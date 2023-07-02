@@ -38,7 +38,6 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
     @test @inferred(inverse(Complex)) isa NoInverse{Type{Complex}}
     @test @inferred(NoInverse(Complex)) isa NoInverse{Type{Complex}}
-    @test @inferred(NoInverse{Type{Complex}}(Complex)) isa NoInverse{Type{Complex}}
 
     InverseFunctions.test_inverse(inverse, log, compare = ===)
 

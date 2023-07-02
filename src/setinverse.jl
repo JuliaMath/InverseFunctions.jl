@@ -11,10 +11,10 @@ Do not construct directly, use [`setinverse(f, invf)`](@ref) instead.
 struct FunctionWithInverse{F,InvF} <: Function
     f::F
     invf::InvF
-    FunctionWithInverse{F, InvF}(f, invf) where {F, InvF} = new{F, InvF}(f, invf)
-    FunctionWithInverse(f, invf) = new{Core.Typeof(f),Core.Typeof(invf)}(f, invf)
 end
-
+FunctionWithInverse(::Type{F}, invf::InvF) where {F,InvF} = FunctionWithInverse{Type{F},InvF}(F,invf)
+FunctionWithInverse(f::F, ::Type{InvF}) where {F,InvF} = FunctionWithInverse{F,Type{InvF}}(f,InvF)
+FunctionWithInverse(::Type{F}, ::Type{InvF}) where {F,InvF} = FunctionWithInverse{Type{F},Type{InvF}}(F,InvF)
 
 (f::FunctionWithInverse)(x) = f.f(x)
 
