@@ -62,6 +62,8 @@ An instance `NoInverse(f)` signifies that `inverse(f)` is not defined.
 """
 struct NoInverse{F}
     f::F
+    NoInverse{F}(f) where F = new{F}(f)
+    NoInverse(f) = new{Core.Typeof(f)}(f)
 end
 export NoInverse
 

@@ -11,6 +11,8 @@ Do not construct directly, use [`setinverse(f, invf)`](@ref) instead.
 struct FunctionWithInverse{F,InvF} <: Function
     f::F
     invf::InvF
+    FunctionWithInverse{F, InvF}(f, invf) where {F, InvF} = new{F, InvF}(f, invf)
+    FunctionWithInverse(f, invf) = new{Core.Typeof(f),Core.Typeof(invf)}(f, invf)
 end
 
 
