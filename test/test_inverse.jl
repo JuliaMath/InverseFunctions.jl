@@ -51,7 +51,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
         InverseFunctions.test_inverse(f, x)
     end
     for f in (
-            +, -, exp, exp2, exp10, expm1, cbrt, deg2rad, rad2deg, conj, reverse,
+            +, -, exp, exp2, exp10, expm1, cbrt, deg2rad, rad2deg, conj,
             Base.Fix1(+, rand()), Base.Fix2(+, rand()), Base.Fix1(-, rand()), Base.Fix2(-, rand()),
             Base.Fix1(*, rand()), Base.Fix2(*, rand()), Base.Fix1(/, rand()), Base.Fix2(/, rand()), Base.Fix1(\, rand()), Base.Fix2(\, rand()),
             Base.Fix2(^, rand(-11:2:11)),
@@ -60,6 +60,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
         InverseFunctions.test_inverse(f, -x)
     end
     InverseFunctions.test_inverse(conj, 2 - 3im)
+    InverseFunctions.test_inverse(reverse, [10, 20, 30])
 
     x = rand(0:10)
     for f in (Base.Fix2(divrem, rand([-5:-1; 1:5])), Base.Fix2(fldmod, rand([-5:-1; 1:5])), Base.Fix2(divrem, 0.123), Base.Fix2(fldmod, 0.123))
