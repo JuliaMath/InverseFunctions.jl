@@ -13,11 +13,8 @@ end
 
 
 function invpow2(x::Real, p::Integer)
-    if x ≥ zero(x) || isodd(p)
-        copysign(abs(x)^inv(p), x)
-    else
-        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
-    end
+    @assert isodd(p)
+    copysign(abs(x)^inv(p), x)
 end
 function invpow2(x::Real, p::Real)
     if x ≥ zero(x)

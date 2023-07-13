@@ -148,6 +148,7 @@ inverse(::typeof(square)) = sqrt
 
 inverse(::typeof(cbrt)) = Base.Fix2(^, 3)
 inverse(f::Base.Fix2{typeof(^)}) = iszero(f.x) ? throw(DomainError(f.x, "Cannot invert x^$(f.x)")) : Base.Fix2(invpow2, f.x)
+inverse(f::Base.Fix2{typeof(^), <:Integer}) = iseven(f.x) ? throw(DomainError(f.x, "Cannot invert x^$(f.x)")) : Base.Fix2(invpow2, f.x)
 inverse(f::Base.Fix2{typeof(invpow2)}) = Base.Fix2(^, f.x)
 inverse(f::Base.Fix1{typeof(^)}) = Base.Fix1(invpow1, f.x)
 inverse(f::Base.Fix1{typeof(invpow1)}) = Base.Fix1(^, f.x)

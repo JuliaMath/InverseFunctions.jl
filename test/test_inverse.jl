@@ -46,7 +46,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     x = rand()
     for f in (
             foo, inv_foo, log, log2, log10, log1p, sqrt,
-            Base.Fix2(^, rand()), Base.Fix2(^, rand([-10:-1; 1:10])), Base.Fix1(^, rand()), Base.Fix1(log, rand()), Base.Fix1(log, 1/rand()), Base.Fix2(log, rand()),
+            Base.Fix2(^, rand()), Base.Fix2(^, rand(float.([-10:-1; 1:10]))), Base.Fix1(^, rand()), Base.Fix1(log, rand()), Base.Fix1(log, 1/rand()), Base.Fix2(log, rand()),
         )
         InverseFunctions.test_inverse(f, x)
     end
@@ -80,7 +80,9 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
     @test_throws DomainError inverse(Base.Fix2(^, 0.51))(complex(-5))
     InverseFunctions.test_inverse(Base.Fix2(^, 0.5), complex(-5))
-    @test_throws DomainError inverse(Base.Fix2(^, 2))(-5)
+    @test_throws DomainError inverse(Base.Fix2(^, 2))
+    @test_throws DomainError inverse(Base.Fix2(^, -4))
+    InverseFunctions.test_inverse(Base.Fix2(^, 2.0), 4)
     @test_throws DomainError inverse(Base.Fix1(^, 2))(-5)
     @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
     @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
