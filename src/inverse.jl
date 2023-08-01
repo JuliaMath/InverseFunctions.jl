@@ -161,4 +161,7 @@ inverse(f::Base.Fix2{typeof(invdivrem)}) = Base.Fix2(divrem, f.x)
 inverse(f::Base.Fix2{typeof(fldmod)}) = Base.Fix2(invfldmod, f.x)
 inverse(f::Base.Fix2{typeof(invfldmod)}) = Base.Fix2(fldmod, f.x)
 
+inverse(::typeof(reim)) = Base.splat(complex)
+inverse(::typeof(Base.splat(complex))) = reim
+
 inverse(::typeof(reverse)) = reverse
