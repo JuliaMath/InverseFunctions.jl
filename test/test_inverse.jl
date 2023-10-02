@@ -125,7 +125,7 @@ end
     end
 end
 
-VERSION ≥ v"1.9" && @testset "dates" begin
+@testset "dates" begin
     InverseFunctions.test_inverse(Dates.date2epochdays, Date(2020, 1, 2); compare = ===)
     InverseFunctions.test_inverse(Dates.datetime2epochms, DateTime(2020, 1, 2, 12, 34, 56); compare = ===)
     InverseFunctions.test_inverse(Dates.epochdays2date, Int64(1234); compare = ===)
