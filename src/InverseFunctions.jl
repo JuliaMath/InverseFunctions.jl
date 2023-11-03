@@ -6,7 +6,6 @@ Lightweight package that defines an interface to invert functions.
 """
 module InverseFunctions
 
-using Test
 
 include("functions.jl")
 include("inverse.jl")
