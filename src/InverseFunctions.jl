@@ -11,6 +11,7 @@ using Test
 include("functions.jl")
 include("inverse.jl")
 include("setinverse.jl")
+include("partinverse.jl")
 include("test.jl")
 
 end # module
