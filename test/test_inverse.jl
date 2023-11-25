@@ -75,7 +75,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test inverse(Base.Fix1(*, 0)) isa NoInverse
     @test inverse(Base.Fix2(^, 0)) isa NoInverse
     @test_throws DomainError inverse(Base.Fix1(log, -2))(5)
-    @test_throws DomainError inverse(Base.Fix1(log, 2))(-5)]
+    @test_throws DomainError inverse(Base.Fix1(log, 2))(-5)
     InverseFunctions.test_inverse(inverse(Base.Fix1(log, 2)), complex(-5))
     @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
     @test_throws DomainError inverse(Base.Fix2(^, 0.51))(complex(-5))
