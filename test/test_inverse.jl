@@ -72,21 +72,21 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     end
 
     # ensure that inverses have domains compatible with original functions
-    @test_throws DomainError inverse(Base.Fix1(*, 0))
-    @test_throws DomainError inverse(Base.Fix2(^, 0))
-    @test_throws DomainError inverse(Base.Fix1(log, -2))(5)
-    @test_throws DomainError inverse(Base.Fix1(log, 2))(-5)
+    @test inverse(Base.Fix1(*, 0)) isa NoInverse
+    @test inverse(Base.Fix2(^, 0)) isa NoInverse
+    @test inverse(Base.Fix1(log, -2))(5) isa NoInverse
+    @test inverse(Base.Fix1(log, 2))(-5) isa NoInverse
     InverseFunctions.test_inverse(inverse(Base.Fix1(log, 2)), complex(-5))
-    @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
-    @test_throws DomainError inverse(Base.Fix2(^, 0.51))(complex(-5))
+    @test inverse(Base.Fix2(^, 0.5))(-5) isa NoInverse
+    @test inverse(Base.Fix2(^, 0.51))(complex(-5)) isa NoInverse
     InverseFunctions.test_inverse(Base.Fix2(^, 0.5), complex(-5))
-    @test_throws DomainError inverse(Base.Fix2(^, 2))(-5)
-    @test_throws DomainError inverse(Base.Fix1(^, 2))(-5)
-    @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
-    @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
+    @test inverse(Base.Fix2(^, 2))(-5) isa NoInverse
+    @test inverse(Base.Fix1(^, 2))(-5) isa NoInverse
+    @test inverse(Base.Fix1(^, -2))(3) isa NoInverse
+    @test inverse(Base.Fix1(^, -2))(3) isa NoInverse
 
-    @test_throws DomainError inverse(Base.Fix2(divrem, 5))((-3, 2))
-    @test_throws DomainError inverse(Base.Fix2(fldmod, 5))((-3, -2))
+    @test inverse(Base.Fix2(divrem, 5))((-3, 2)) isa NoInverse
+    @test inverse(Base.Fix2(fldmod, 5))((-3, -2)) isa NoInverse
     InverseFunctions.test_inverse(inverse(Base.Fix2(divrem, 5)), (-3, -2); compare=(==))
     InverseFunctions.test_inverse(inverse(Base.Fix2(fldmod, 5)), (-3, 2); compare=(==))
 
