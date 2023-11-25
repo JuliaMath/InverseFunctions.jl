@@ -13,26 +13,22 @@ end
 
 
 function invpow2(x::Real, p::Integer)
-    @assert isodd(p)
+    # exception should never happen in actual use: this check is done in inverse(f)
+    isodd(p) || throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     copysign(abs(x)^inv(p), x)
 end
 function invpow2(x::Real, p::Real)
-    if x ≥ zero(x)
-        x^inv(p)
-    else
-        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
-    end
+    x ≥ zero(x) || throw(DomainError(x, "inverse for x^$p is not defined at $x"))
+    x^inv(p)
 end
 function invpow2(x, p::Real)
     # complex x^p is only invertible for p = 1/n
-    if isinteger(inv(p))
-        x^inv(p)
-    else
-        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
-    end
+    isinteger(inv(p)) || throw(DomainError(x, "inverse for x^$p is not defined at $x"))
+    x^inv(p)
 end
 
 function invpow1(b::Real, x::Real)
+    # b < 0 should never happen in actual use: this check is done in inverse(f)
     if b ≥ zero(b) && x ≥ zero(x)
         log(b, x)
     else
@@ -41,14 +37,17 @@ function invpow1(b::Real, x::Real)
 end
 
 function invlog1(b::Real, x::Real)
-    if b ≥ zero(b)
-        b^x
-    else
-        throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
-    end
+    # exception may happen here: check cannot be done in inverse(f) because of log(Real, Complex)
+    b > zero(b) && b != one(b) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+    b^x
 end
 invlog1(b, x) = b^x
 
+function invlog2(b::Real, x::Real)
+    # exception may happen here: check cannot be done in inverse(f) because of log(Complex, Real)
+    x > zero(x) && x != one(x) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+    x^inv(b)
+end
 invlog2(b, x) = x^inv(b)
 
 

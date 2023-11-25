@@ -46,7 +46,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     x = rand()
     for f in (
             foo, inv_foo, log, log2, log10, log1p, sqrt,
-            Base.Fix2(^, rand()), Base.Fix2(^, rand(float.([-10:-1; 1:10]))), Base.Fix1(^, rand()), Base.Fix1(log, rand()), Base.Fix1(log, 1/rand()), Base.Fix2(log, rand()),
+            Base.Fix2(^, 3*rand() - 0.5), Base.Fix2(^, rand(float.([-10:-1; 1:10]))), Base.Fix1(^, rand()), Base.Fix1(log, rand()), Base.Fix1(log, 1/rand()), Base.Fix2(log, rand()),
         )
         InverseFunctions.test_inverse(f, x)
     end

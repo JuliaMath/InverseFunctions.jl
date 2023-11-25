@@ -147,18 +147,24 @@ inverse(::typeof(sqrt)) = square
 inverse(::typeof(square)) = sqrt
 
 inverse(::typeof(cbrt)) = Base.Fix2(^, 3)
+
 inverse(f::Base.Fix2{typeof(^)}) = iszero(f.x) ? throw(DomainError(f.x, "Cannot invert x^$(f.x)")) : Base.Fix2(invpow2, f.x)
-inverse(f::Base.Fix2{typeof(^), <:Integer}) = iseven(f.x) ? throw(DomainError(f.x, "Cannot invert x^$(f.x)")) : Base.Fix2(invpow2, f.x)
+inverse(f::Base.Fix2{typeof(^), <:Integer}) = isodd(f.x) ? Base.Fix2(invpow2, f.x) : throw(DomainError(f.x, "Cannot invert x^$(f.x)"))
 inverse(f::Base.Fix2{typeof(invpow2)}) = Base.Fix2(^, f.x)
+
+inverse(f::Base.Fix1{typeof(^), <:Real}) = f.x > zero(f.x) ? Base.Fix1(invpow1, f.x) : throw(DomainError(f.x, "Cannot invert"))
 inverse(f::Base.Fix1{typeof(^)}) = Base.Fix1(invpow1, f.x)
 inverse(f::Base.Fix1{typeof(invpow1)}) = Base.Fix1(^, f.x)
-inverse(f::Base.Fix1{typeof(log)}) = Base.Fix1(invlog1, f.x)
+
+inverse(f::Base.Fix1{typeof(log)}) = f.x == one(f.x) ? throw(DomainError(f.x, "Cannot invert")) : Base.Fix1(invlog1, f.x)
 inverse(f::Base.Fix1{typeof(invlog1)}) = Base.Fix1(log, f.x)
-inverse(f::Base.Fix2{typeof(log)}) = Base.Fix2(invlog2, f.x)
+
+inverse(f::Base.Fix2{typeof(log)}) = f.x == one(f.x) ? throw(DomainError(f.x, "Cannot invert")) : Base.Fix2(invlog2, f.x)
 inverse(f::Base.Fix2{typeof(invlog2)}) = Base.Fix2(log, f.x)
 
 inverse(f::Base.Fix2{typeof(divrem)}) = Base.Fix2(invdivrem, f.x)
 inverse(f::Base.Fix2{typeof(invdivrem)}) = Base.Fix2(divrem, f.x)
+
 inverse(f::Base.Fix2{typeof(fldmod)}) = Base.Fix2(invfldmod, f.x)
 inverse(f::Base.Fix2{typeof(invfldmod)}) = Base.Fix2(fldmod, f.x)
 
