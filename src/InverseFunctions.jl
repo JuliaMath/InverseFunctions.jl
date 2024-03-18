@@ -13,4 +13,8 @@ include("inverse.jl")
 include("setinverse.jl")
 include("test.jl")
 
+@static if !isdefined(Base, :get_extension)
+    include("../ext/DatesExt.jl")
+end
+
 end # module

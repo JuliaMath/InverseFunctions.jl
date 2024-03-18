@@ -2,6 +2,7 @@
 
 using Test
 using InverseFunctions
+using Dates
 
 
 foo(x) = inv(exp(-x) + 1)
@@ -18,14 +19,13 @@ end
 (f::Bar)(x) = f.A * x
 InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
+@static if VERSION >= v"1.6"
+    _bc_func(f) = Base.Broadcast.BroadcastFunction(f)
+else
+    _bc_func(f) = Base.Fix1(broadcast, f)
+end
 
 @testset "inverse" begin
-    @static if VERSION >= v"1.6"
-        _bc_func(f) = Base.Broadcast.BroadcastFunction(f)
-    else
-        _bc_func(f) = Base.Fix1(broadcast, f)
-    end
-
     f_without_inverse(x) = 1
     @test inverse(f_without_inverse) isa NoInverse
     @test_throws ErrorException inverse(f_without_inverse)(42)
@@ -40,7 +40,9 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test @inferred(NoInverse(Complex)) isa NoInverse{Type{Complex}}
 
     InverseFunctions.test_inverse(inverse, log, compare = ===)
+end
 
+@testset "maths" begin
     InverseFunctions.test_inverse(!, false)
 
     x = rand()
@@ -121,4 +123,16 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @static if VERSION >= v"1.6"
         InverseFunctions.test_inverse(log ∘ foo, x)
     end
+end
+
+@testset "dates" begin
+    InverseFunctions.test_inverse(Dates.date2epochdays, Date(2020, 1, 2); compare = ===)
+    InverseFunctions.test_inverse(Dates.datetime2epochms, DateTime(2020, 1, 2, 12, 34, 56); compare = ===)
+    InverseFunctions.test_inverse(Dates.epochdays2date, Int64(1234); compare = ===)
+    InverseFunctions.test_inverse(Dates.epochms2datetime, Int64(1234567890); compare = ===)
+
+    InverseFunctions.test_inverse(datetime2unix, DateTime(2020, 1, 2, 12, 34, 56); compare = ===)
+    InverseFunctions.test_inverse(unix2datetime, 1234.56; compare = ===)
+    InverseFunctions.test_inverse(datetime2julian, DateTime(2020, 1, 2, 12, 34, 56); compare = ===)
+    InverseFunctions.test_inverse(julian2datetime, 1234.56; compare = ===)
 end
