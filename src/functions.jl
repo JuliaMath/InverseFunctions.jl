@@ -13,7 +13,7 @@ function square(x)
 end
 
 
-function invpow2(x, p::Integer)
+function invpow2(x::Number, p::Integer)
     if isreal_type(x)
         # real x^p::Int is invertible for x > 0 or p odd 
         x ≥ zero(x) || isodd(p) ?
@@ -24,7 +24,7 @@ function invpow2(x, p::Integer)
         isinteger(inv(p)) ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     end
 end
-function invpow2(x, p::Real)
+function invpow2(x::Number, p::Real)
     isdefined = isreal_type(x) ?
         x ≥ zero(x) :  # real x^p is invertible for x ≥ 0
         isinteger(inv(p))  # complex x^p is invertible for p = 1/n
@@ -46,12 +46,12 @@ function invlog1(b::Real, x::Real)
         throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
     end
 end
-invlog1(b, x) = b^x
+invlog1(b::Number, x::Number) = b^x
 
-invlog2(b, x) = x^inv(b)
+invlog2(b::Number, x::Number) = x^inv(b)
 
 
-function invdivrem((q, r), divisor)
+function invdivrem((q, r)::NTuple{2,Number}, divisor::Number)
     res = muladd(q, divisor, r)
     if abs(r) ≤ abs(divisor) && (iszero(r) || sign(r) == sign(res))
         res
@@ -60,7 +60,7 @@ function invdivrem((q, r), divisor)
     end
 end
 
-function invfldmod((q, r), divisor)
+function invfldmod((q, r)::NTuple{2,Number}, divisor::Number)
     if abs(r) ≤ abs(divisor) && (iszero(r) || sign(r) == sign(divisor))
         muladd(q, divisor, r)
     else
