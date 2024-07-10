@@ -5,34 +5,30 @@
 
 Inverse of `sqrt(x)` for non-negative `x`.
 """
-square(x) = x^2
-function square(x::Real)
-    x < zero(x) && throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative values"))
+function square(x)
+    if isreal_type(x) && x < zero(x)
+        throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative values"))
+    end
     return x^2
 end
 
 
-function invpow2(x::Real, p::Integer)
-    if x ≥ zero(x) || isodd(p)
-        copysign(abs(x)^inv(p), x)
+function invpow2(x, p::Integer)
+    if isreal_type(x)
+        # real x^p::Int is invertible for x > 0 or p odd 
+        x ≥ zero(x) || isodd(p) ?
+            copysign(abs(x)^inv(p), x) :
+            throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     else
-        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
-    end
-end
-function invpow2(x::Real, p::Real)
-    if x ≥ zero(x)
-        x^inv(p)
-    else
-        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
+        # complex x^p is invertible only for p = 1/n
+        isinteger(inv(p)) ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     end
 end
 function invpow2(x, p::Real)
-    # complex x^p is only invertible for p = 1/n
-    if isinteger(inv(p))
-        x^inv(p)
-    else
-        throw(DomainError(x, "inverse for x^$p is not defined at $x"))
-    end
+    isdefined = isreal_type(x) ?
+        x ≥ zero(x) :  # real x^p is invertible for x ≥ 0
+        isinteger(inv(p))  # complex x^p is invertible for p = 1/n
+    isdefined ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
 end
 
 function invpow1(b::Real, x::Real)
@@ -71,3 +67,10 @@ function invfldmod((q, r), divisor)
         throw(DomainError((q, r), "inverse for fldmod(x) is not defined at this point"))
     end
 end
+
+
+# check if x is of a real-Number type
+# this is not the same as `x isa Real` which immediately excludes custom Number subtypes such as unitful numbers
+# this is also not the same as isreal(x) which is true for complex numbers with zero imaginary part
+isreal_type(x::T) where {T<:Number} = real(T) == T
+isreal_type(x) = false
