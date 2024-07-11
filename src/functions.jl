@@ -65,6 +65,6 @@ end
 # check if T is a real-Number type
 # this is not the same as T <: Real which immediately excludes custom Number subtypes such as unitful numbers
 # also, isreal(x) != is_real_type(typeof(x)): the former is true for complex numbers with zero imaginary part
-is_real_type(@nospecialize _::Type{<:Real}) = true
-is_real_type(::Type{T}) where {T<:Number} = real(T) == T
-is_real_type(@nospecialize _::Type) = false
+@inline is_real_type(@nospecialize _::Type{<:Real}) = true
+@inline is_real_type(::Type{T}) where {T<:Number} = real(T) == T
+@inline is_real_type(@nospecialize _::Type) = false
