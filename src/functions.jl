@@ -7,7 +7,7 @@ Inverse of `sqrt(x)` for non-negative `x`.
 """
 function square(x)
     if is_real_type(typeof(x)) && x < zero(x)
-        throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative real values"))
+        throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative values"))
     end
     return x^2
 end
@@ -67,4 +67,4 @@ end
 # also, isreal(x) != is_real_type(typeof(x)): the former is true for complex numbers with zero imaginary part
 is_real_type(@nospecialize _::Type{<:Real}) = true
 is_real_type(::Type{T}) where {T<:Number} = real(T) == T
-is_real_type(_) = false
+is_real_type(@nospecialize _::Type) = false
