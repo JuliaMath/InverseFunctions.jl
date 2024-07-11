@@ -7,7 +7,7 @@ Inverse of `sqrt(x)` for non-negative `x`.
 """
 function square(x)
     if is_real_type(typeof(x)) && x < zero(x)
-        throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative values"))
+        throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative real values"))
     end
     return x^2
 end
