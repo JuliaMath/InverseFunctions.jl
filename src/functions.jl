@@ -6,7 +6,7 @@
 Inverse of `sqrt(x)` for non-negative `x`.
 """
 function square(x)
-    if isreal_type(x) && x < zero(x)
+    if is_real_type(typeof(x)) && x < zero(x)
         throw(DomainError(x, "`square` is defined as the inverse of `sqrt` and can only be evaluated for non-negative values"))
     end
     return x^2
@@ -14,7 +14,7 @@ end
 
 
 function invpow2(x::Number, p::Integer)
-    if isreal_type(x)
+    if is_real_type(typeof(x))
         # real x^p::Int is invertible for x > 0 or p odd 
         x ≥ zero(x) || isodd(p) ?
             copysign(abs(x)^inv(p), x) :
@@ -25,7 +25,7 @@ function invpow2(x::Number, p::Integer)
     end
 end
 function invpow2(x::Number, p::Real)
-    isdefined = isreal_type(x) ?
+    isdefined = is_real_type(typeof(x)) ?
         x ≥ zero(x) :  # real x^p is invertible for x ≥ 0
         isinteger(inv(p))  # complex x^p is invertible for p = 1/n
     isdefined ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
@@ -69,8 +69,9 @@ function invfldmod((q, r)::NTuple{2,Number}, divisor::Number)
 end
 
 
-# check if x is of a real-Number type
-# this is not the same as `x isa Real` which immediately excludes custom Number subtypes such as unitful numbers
-# this is also not the same as isreal(x) which is true for complex numbers with zero imaginary part
-isreal_type(x::T) where {T<:Number} = real(T) == T
-isreal_type(x) = false
+# check if T is a real-Number type
+# this is not the same as T <: Real which immediately excludes custom Number subtypes such as unitful numbers
+# also, isreal(x) != is_real_type(typeof(x)): the former is true for complex numbers with zero imaginary part
+is_real_type(@nospecialize _::Type{<:Real}) = true
+is_real_type(::Type{T}) where {T<:Number} = real(T) == T
+is_real_type(_) = false
