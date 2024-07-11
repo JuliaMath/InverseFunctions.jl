@@ -16,7 +16,7 @@ end
 function invpow2(x::Number, p::Real)
     if is_real_type(typeof(x))
         x ≥ zero(x) ? x^inv(p) :  # x > 0 - trivially invertible
-            isodd(p) ? copysign(abs(x)^inv(p), x) :  # p odd - invertible even for x < 0
+            isinteger(p) && isodd(Integer(p)) ? copysign(abs(x)^inv(p), x) :  # p odd - invertible even for x < 0
             throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     else
         # complex x^p is invertible only for p = 1/n
