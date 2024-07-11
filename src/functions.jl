@@ -13,22 +13,15 @@ function square(x)
 end
 
 
-function invpow2(x::Number, p::Integer)
+function invpow2(x::Number, p::Real)
     if is_real_type(typeof(x))
-        # real x^p::Int is invertible for x > 0 or p odd 
-        x ≥ zero(x) || isodd(p) ?
-            copysign(abs(x)^inv(p), x) :
+        x ≥ zero(x) ? x^inv(p) :  # x > 0 - trivially invertible
+            isodd(p) ? copysign(abs(x)^inv(p), x) :  # p odd - invertible even for x < 0
             throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     else
         # complex x^p is invertible only for p = 1/n
         isinteger(inv(p)) ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     end
-end
-function invpow2(x::Number, p::Real)
-    isdefined = is_real_type(typeof(x)) ?
-        x ≥ zero(x) :  # real x^p is invertible for x ≥ 0
-        isinteger(inv(p))  # complex x^p is invertible for p = 1/n
-    isdefined ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
 end
 
 function invpow1(b::Real, x::Real)
