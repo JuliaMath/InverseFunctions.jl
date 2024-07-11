@@ -13,7 +13,7 @@ function square(x)
 end
 
 
-function invpow2(x::Number, p::Real)
+function invpow_arg2(x::Number, p::Real)
     if is_real_type(typeof(x))
         x ≥ zero(x) ? x^inv(p) :  # x > 0 - trivially invertible
             isinteger(p) && isodd(Integer(p)) ? copysign(abs(x)^inv(p), x) :  # p odd - invertible even for x < 0
@@ -24,7 +24,7 @@ function invpow2(x::Number, p::Real)
     end
 end
 
-function invpow1(b::Real, x::Real)
+function invpow_arg1(b::Real, x::Real)
     if b ≥ zero(b) && x ≥ zero(x)
         log(b, x)
     else
@@ -32,16 +32,16 @@ function invpow1(b::Real, x::Real)
     end
 end
 
-function invlog1(b::Real, x::Real)
+function invlog_arg1(b::Real, x::Real)
     if b ≥ zero(b)
         b^x
     else
         throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
     end
 end
-invlog1(b::Number, x::Number) = b^x
+invlog_arg1(b::Number, x::Number) = b^x
 
-invlog2(b::Number, x::Number) = x^inv(b)
+invlog_arg2(b::Number, x::Number) = x^inv(b)
 
 
 function invdivrem((q, r)::NTuple{2,Number}, divisor::Number)
