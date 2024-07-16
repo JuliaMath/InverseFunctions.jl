@@ -2,6 +2,7 @@
 
 using Test
 using InverseFunctions
+using Unitful
 using Dates
 
 
@@ -79,6 +80,9 @@ end
     end
 
     # ensure that inverses have domains compatible with original functions
+    @test_throws DomainError inverse(sqrt)(-1.0)
+    InverseFunctions.test_inverse(sqrt, complex(-1.0))
+    InverseFunctions.test_inverse(sqrt, complex(1.0))
     @test_throws DomainError inverse(Base.Fix1(*, 0))
     @test_throws DomainError inverse(Base.Fix2(^, 0))
     @test_throws DomainError inverse(Base.Fix1(log, -2))(5)
@@ -86,7 +90,9 @@ end
     InverseFunctions.test_inverse(inverse(Base.Fix1(log, 2)), complex(-5))
     @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
     @test_throws DomainError inverse(Base.Fix2(^, 0.51))(complex(-5))
+    @test_throws DomainError inverse(Base.Fix2(^, 2))(complex(-5))
     InverseFunctions.test_inverse(Base.Fix2(^, 0.5), complex(-5))
+    InverseFunctions.test_inverse(Base.Fix2(^, -1), complex(-5.))
     @test_throws DomainError inverse(Base.Fix2(^, 2))(-5)
     @test_throws DomainError inverse(Base.Fix1(^, 2))(-5)
     @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
@@ -128,6 +134,20 @@ end
     @static if VERSION >= v"1.6"
         InverseFunctions.test_inverse(log ∘ foo, x)
     end
+end
+
+@testset "unitful" begin
+    # the majority of inverse just propagate to underlying mathematical functions and don't have any issues with unitful numbers
+    # only those that behave treat real numbers differently have to be tested here
+    x = rand()u"m"
+    InverseFunctions.test_inverse(sqrt, x)
+    @test_throws DomainError inverse(sqrt)(-x)
+
+    InverseFunctions.test_inverse(Base.Fix2(^, 2), x)
+    @test_throws DomainError inverse(Base.Fix2(^, 2))(-x)
+    InverseFunctions.test_inverse(Base.Fix2(^, 3), x)
+    InverseFunctions.test_inverse(Base.Fix2(^, 3), -x)
+    InverseFunctions.test_inverse(Base.Fix2(^, -3.5), x)
 end
 
 @testset "dates" begin

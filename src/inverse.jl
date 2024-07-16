@@ -159,14 +159,14 @@ inverse(::typeof(sqrt)) = square
 inverse(::typeof(square)) = sqrt
 
 inverse(::typeof(cbrt)) = Base.Fix2(^, 3)
-inverse(f::Base.Fix2{typeof(^)}) = iszero(f.x) ? throw(DomainError(f.x, "Cannot invert x^$(f.x)")) : Base.Fix2(invpow2, f.x)
-inverse(f::Base.Fix2{typeof(invpow2)}) = Base.Fix2(^, f.x)
-inverse(f::Base.Fix1{typeof(^)}) = Base.Fix1(invpow1, f.x)
-inverse(f::Base.Fix1{typeof(invpow1)}) = Base.Fix1(^, f.x)
-inverse(f::Base.Fix1{typeof(log)}) = Base.Fix1(invlog1, f.x)
-inverse(f::Base.Fix1{typeof(invlog1)}) = Base.Fix1(log, f.x)
-inverse(f::Base.Fix2{typeof(log)}) = Base.Fix2(invlog2, f.x)
-inverse(f::Base.Fix2{typeof(invlog2)}) = Base.Fix2(log, f.x)
+inverse(f::Base.Fix2{typeof(^)}) = iszero(f.x) ? throw(DomainError(f.x, "Cannot invert x^$(f.x)")) : Base.Fix2(invpow_arg2, f.x)
+inverse(f::Base.Fix2{typeof(invpow_arg2)}) = Base.Fix2(^, f.x)
+inverse(f::Base.Fix1{typeof(^)}) = Base.Fix1(invpow_arg1, f.x)
+inverse(f::Base.Fix1{typeof(invpow_arg1)}) = Base.Fix1(^, f.x)
+inverse(f::Base.Fix1{typeof(log)}) = Base.Fix1(invlog_arg1, f.x)
+inverse(f::Base.Fix1{typeof(invlog_arg1)}) = Base.Fix1(log, f.x)
+inverse(f::Base.Fix2{typeof(log)}) = Base.Fix2(invlog_arg2, f.x)
+inverse(f::Base.Fix2{typeof(invlog_arg2)}) = Base.Fix2(log, f.x)
 
 inverse(f::Base.Fix2{typeof(divrem)}) = Base.Fix2(invdivrem, f.x)
 inverse(f::Base.Fix2{typeof(invdivrem)}) = Base.Fix2(divrem, f.x)
