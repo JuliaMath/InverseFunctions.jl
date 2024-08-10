@@ -9,8 +9,7 @@
 
 InverseFunctions.jl defines an interface to invert functions.
 
-`InverseFunctions` is a very lightweight package and has no dependencies
-beyond `Base` and `Test`.
+`InverseFunctions` is a very lightweight package and has no dependencies.
 
 ## Documentation
 
