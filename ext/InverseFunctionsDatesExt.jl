@@ -1,4 +1,4 @@
-module DatesExt
+module InverseFunctionsDatesExt
 
 using Dates
 import InverseFunctions: inverse
