@@ -38,7 +38,7 @@ end
 
 function invlog1(b::Real, x::Real)
     # exception may happen here: check cannot be done in inverse(f) because of log(Real, Complex)
-    b > zero(b) && b != one(b) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+    b > zero(b) && !isone(b) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
     b^x
 end
 invlog1(b, x) = b^x
