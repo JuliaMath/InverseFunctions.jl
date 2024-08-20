@@ -45,7 +45,7 @@ invlog1(b, x) = b^x
 
 function invlog2(b::Real, x::Real)
     # exception may happen here: check cannot be done in inverse(f) because of log(Complex, Real)
-    x > zero(x) && x != one(x) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+    x > zero(x) && !isone(x) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
     x^inv(b)
 end
 invlog2(b, x) = x^inv(b)
