@@ -159,7 +159,7 @@ inverse(f::Base.Fix1{typeof(invpow1)}) = Base.Fix1(^, f.x)
 inverse(f::Base.Fix1{typeof(log)}) = isone(f.x) ? throw(DomainError(f.x, "Cannot invert $(f.x)^x")) : Base.Fix1(invlog1, f.x)
 inverse(f::Base.Fix1{typeof(invlog1)}) = Base.Fix1(log, f.x)
 
-inverse(f::Base.Fix2{typeof(log)}) = f.x == one(f.x) ? throw(DomainError(f.x, "Cannot invert")) : Base.Fix2(invlog2, f.x)
+inverse(f::Base.Fix2{typeof(log)}) = isone(f.x) ? throw(DomainError(f.x, "Cannot invert log(x, $(f.x))")) : Base.Fix2(invlog2, f.x)
 inverse(f::Base.Fix2{typeof(invlog2)}) = Base.Fix2(log, f.x)
 
 inverse(f::Base.Fix2{typeof(divrem)}) = Base.Fix2(invdivrem, f.x)
