@@ -2,6 +2,8 @@
 
 using Test
 using InverseFunctions
+using Unitful
+using Dates
 
 
 foo(x) = inv(exp(-x) + 1)
@@ -18,14 +20,13 @@ end
 (f::Bar)(x) = f.A * x
 InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
 
+@static if VERSION >= v"1.6"
+    _bc_func(f) = Base.Broadcast.BroadcastFunction(f)
+else
+    _bc_func(f) = Base.Fix1(broadcast, f)
+end
 
 @testset "inverse" begin
-    @static if VERSION >= v"1.6"
-        _bc_func(f) = Base.Broadcast.BroadcastFunction(f)
-    else
-        _bc_func(f) = Base.Fix1(broadcast, f)
-    end
-
     f_without_inverse(x) = 1
     @test inverse(f_without_inverse) isa NoInverse
     @test_throws ErrorException inverse(f_without_inverse)(42)
@@ -40,7 +41,9 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test @inferred(NoInverse(Complex)) isa NoInverse{Type{Complex}}
 
     InverseFunctions.test_inverse(inverse, log, compare = ===)
+end
 
+@testset "maths" begin
     InverseFunctions.test_inverse(!, false)
 
     x = rand()
@@ -52,6 +55,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     end
     for f in (
             +, -, exp, exp2, exp10, expm1, cbrt, deg2rad, rad2deg, conj,
+            sinh, tanh, coth, csch, asinh, atanh, acsch,  # all invertible hyperbolic functions aside from acoth
             Base.Fix1(+, rand()), Base.Fix2(+, rand()), Base.Fix1(-, rand()), Base.Fix2(-, rand()),
             Base.Fix1(*, rand()), Base.Fix2(*, rand()), Base.Fix1(/, rand()), Base.Fix2(/, rand()), Base.Fix1(\, rand()), Base.Fix2(\, rand()),
             Base.Fix2(^, rand(-11:2:11)),
@@ -59,6 +63,10 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
         InverseFunctions.test_inverse(f, x)
         InverseFunctions.test_inverse(f, -x)
     end
+    # acoth only defined for |x| > 1
+    InverseFunctions.test_inverse(acoth, 1 + x)
+    InverseFunctions.test_inverse(acoth, -1 - x)
+
     InverseFunctions.test_inverse(conj, 2 - 3im)
     InverseFunctions.test_inverse(reverse, [10, 20, 30])
 
@@ -72,6 +80,9 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     end
 
     # ensure that inverses have domains compatible with original functions
+    @test_throws DomainError inverse(sqrt)(-1.0)
+    InverseFunctions.test_inverse(sqrt, complex(-1.0))
+    InverseFunctions.test_inverse(sqrt, complex(1.0))
     @test_throws DomainError inverse(Base.Fix1(*, 0))
     @test_throws DomainError inverse(Base.Fix2(^, 0))
     @test_throws DomainError inverse(Base.Fix1(log, -2))(5)
@@ -79,6 +90,7 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     InverseFunctions.test_inverse(inverse(Base.Fix1(log, 2)), complex(-5))
     @test_throws DomainError inverse(Base.Fix2(^, 0.5))(-5)
     @test_throws DomainError inverse(Base.Fix2(^, 0.51))(complex(-5))
+    @test_throws DomainError inverse(Base.Fix2(^, 2))(complex(-5))
     InverseFunctions.test_inverse(Base.Fix2(^, 0.5), complex(-5))
     @test_throws DomainError inverse(Base.Fix2(^, 2))
     @test_throws DomainError inverse(Base.Fix2(^, -4))
@@ -91,6 +103,8 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test_throws DomainError inverse(Base.Fix2(^, 0))(4)
     @test_throws DomainError inverse(Base.Fix2(log, -2))(4)
     @test_throws DomainError inverse(Base.Fix2(log, 1))(4)
+    InverseFunctions.test_inverse(Base.Fix2(^, -1), complex(-5.))
+    @test_throws DomainError inverse(Base.Fix2(^, 2))(-5)
     @test_throws DomainError inverse(Base.Fix1(^, 2))(-5)
     @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
     @test_throws DomainError inverse(Base.Fix1(^, -2))(3)
@@ -99,6 +113,10 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @test_throws DomainError inverse(Base.Fix2(fldmod, 5))((-3, -2))
     InverseFunctions.test_inverse(inverse(Base.Fix2(divrem, 5)), (-3, -2); compare=(==))
     InverseFunctions.test_inverse(inverse(Base.Fix2(fldmod, 5)), (-3, 2); compare=(==))
+
+    InverseFunctions.test_inverse(reim, -3; compare=(==))
+    InverseFunctions.test_inverse(reim, -3+2im; compare=(==))
+    InverseFunctions.test_inverse(Base.splat(complex), (-3, 2); compare=(==))
 
     A = rand(5, 5)
     for f in (
@@ -127,4 +145,30 @@ InverseFunctions.inverse(f::Bar) = Bar(inv(f.A))
     @static if VERSION >= v"1.6"
         InverseFunctions.test_inverse(log ∘ foo, x)
     end
+end
+
+@testset "unitful" begin
+    # the majority of inverse just propagate to underlying mathematical functions and don't have any issues with unitful numbers
+    # only those that behave treat real numbers differently have to be tested here
+    x = rand()u"m"
+    InverseFunctions.test_inverse(sqrt, x)
+    @test_throws DomainError inverse(sqrt)(-x)
+
+    InverseFunctions.test_inverse(Base.Fix2(^, 2), x)
+    @test_throws DomainError inverse(Base.Fix2(^, 2))(-x)
+    InverseFunctions.test_inverse(Base.Fix2(^, 3), x)
+    InverseFunctions.test_inverse(Base.Fix2(^, 3), -x)
+    InverseFunctions.test_inverse(Base.Fix2(^, -3.5), x)
+end
+
+@testset "dates" begin
+    InverseFunctions.test_inverse(Dates.date2epochdays, Date(2020, 1, 2); compare = ===)
+    InverseFunctions.test_inverse(Dates.datetime2epochms, DateTime(2020, 1, 2, 12, 34, 56); compare = ===)
+    InverseFunctions.test_inverse(Dates.epochdays2date, Int64(1234); compare = ===)
+    InverseFunctions.test_inverse(Dates.epochms2datetime, Int64(1234567890); compare = ===)
+
+    InverseFunctions.test_inverse(datetime2unix, DateTime(2020, 1, 2, 12, 34, 56); compare = ===)
+    InverseFunctions.test_inverse(unix2datetime, 1234.56; compare = ===)
+    InverseFunctions.test_inverse(datetime2julian, DateTime(2020, 1, 2, 12, 34, 56); compare = ===)
+    InverseFunctions.test_inverse(julian2datetime, 1234.56; compare = ===)
 end
