@@ -154,11 +154,10 @@ end
     InverseFunctions.test_inverse(sqrt, x)
     @test_throws DomainError inverse(sqrt)(-x)
 
-    InverseFunctions.test_inverse(Base.Fix2(^, 2), x)
-    @test_throws DomainError inverse(Base.Fix2(^, 2))(-x)
     InverseFunctions.test_inverse(Base.Fix2(^, 3), x)
     InverseFunctions.test_inverse(Base.Fix2(^, 3), -x)
     InverseFunctions.test_inverse(Base.Fix2(^, -3.5), x)
+    @test_throws DomainError inverse(Base.Fix2(^, 2))(-x)
 end
 
 @testset "dates" begin
