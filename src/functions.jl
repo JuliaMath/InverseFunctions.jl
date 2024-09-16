@@ -13,18 +13,20 @@ function square(x)
 end
 
 
+  
 function invpow_arg2(x::Number, p::Real)
     if is_real_type(typeof(x))
         x ≥ zero(x) ? x^inv(p) :  # x > 0 - trivially invertible
             isinteger(p) && isodd(Integer(p)) ? copysign(abs(x)^inv(p), x) :  # p odd - invertible even for x < 0
             throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     else
-        # complex x^p is invertible only for p = 1/n
+        # complex x^p is only invertible for p = 1/n
         isinteger(inv(p)) ? x^inv(p) : throw(DomainError(x, "inverse for x^$p is not defined at $x"))
     end
 end
 
 function invpow_arg1(b::Real, x::Real)
+    # b < 0 should never happen in actual use: this check is done in inverse(f)
     if b ≥ zero(b) && x ≥ zero(x)
         log(b, x)
     else
@@ -33,15 +35,19 @@ function invpow_arg1(b::Real, x::Real)
 end
 
 function invlog_arg1(b::Real, x::Real)
-    if b ≥ zero(b)
-        b^x
-    else
-        throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
-    end
+    # exception may happen here: check cannot be done in inverse(f) because of log(Real, Complex)
+    b > zero(b) && !isone(b) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+    b^x
 end
 invlog_arg1(b::Number, x::Number) = b^x
 
-invlog_arg2(b::Number, x::Number) = x^inv(b)
+
+function invlog_arg2(b::Real, x::Real)
+    # exception may happen here: check cannot be done in inverse(f) because of log(Complex, Real)
+    x > zero(x) && !isone(x) || throw(DomainError(x, "inverse for log($b, x) is not defined at $x"))
+    x^inv(b)
+end
+invlog_arg2(b, x) = x^inv(b)
 
 
 function invdivrem((q, r)::NTuple{2,Number}, divisor::Number)
