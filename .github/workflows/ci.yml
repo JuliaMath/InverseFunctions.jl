@@ -52,12 +52,12 @@ jobs:
           coverage: ${{ matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.arch == 'x64' }}
       - uses: julia-actions/julia-processcoverage@v1
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         if: matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
         with:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: lcov.info
+          files: lcov.info
   docs:
     name: Documentation
     runs-on: ubuntu-latest
