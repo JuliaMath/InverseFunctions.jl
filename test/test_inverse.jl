@@ -43,6 +43,38 @@ end
     InverseFunctions.test_inverse(inverse, log, compare = ===)
 end
 
+@static if isdefined(Base, :get_extension)
+    @testset "test_inverse without Test" begin
+        script = """
+        using InverseFunctions
+        try
+            InverseFunctions.test_inverse(identity, 1)
+            exit(1)
+        catch err
+            showerror(stdout, err)
+            exit(err isa ArgumentError ? 0 : 1)
+        end
+        """
+        cmd = `$(Base.julia_cmd()) --startup-file=no --project=$(Base.active_project()) -e $script`
+        output = read(ignorestatus(cmd), String)
+        @test occursin("Did you forget to load Test?", output)
+
+        script = """
+        using InverseFunctions
+        try
+            InverseFunctions.test_inverse(identity)
+            exit(1)
+        catch err
+            showerror(stdout, err)
+            exit(err isa MethodError ? 0 : 1)
+        end
+        """
+        cmd = `$(Base.julia_cmd()) --startup-file=no --project=$(Base.active_project()) -e $script`
+        output = read(ignorestatus(cmd), String)
+        @test occursin("MethodError", output)
+    end
+end
+
 @testset "maths" begin
     InverseFunctions.test_inverse(!, false)
 

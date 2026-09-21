@@ -26,23 +26,14 @@ The function tests (as a `Test.@testset`) if
     On Julia >= 1.9, you have to load the `Test` standard library to be able to use
     this function.
 """
-function test_inverse end
+function test_inverse(args...; kwargs...)
+    length(args) == 2 || throw(MethodError(test_inverse, args))
+    throw(ArgumentError("InverseFunctions.test_inverse requires the Test standard library. Did you forget to load Test?"))
+end
 
 @static if !isdefined(Base, :get_extension)
     include("../ext/InverseFunctionsDatesExt.jl")
-    include("../ext/InverseFunctionsTestExt.jl") 
-end
-
-# Better error message if users forget to load Test
-if isdefined(Base, :get_extension) && isdefined(Base.Experimental, :register_error_hint)
-    function __init__()
-        Base.Experimental.register_error_hint(MethodError) do io, exc, _, _
-            if exc.f === test_inverse &&
-                (Base.get_extension(InverseFunctions, :InverseFunctionsTest) === nothing)
-                print(io, "\nDid you forget to load Test?")
-            end
-        end
-    end
+    include("../ext/InverseFunctionsTestExt.jl")
 end
 
 end # module
