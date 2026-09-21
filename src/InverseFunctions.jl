@@ -22,7 +22,7 @@ The function tests (as a `Test.@testset`) if
 
 `kwargs...` are forwarded to `compare`.
 
-!!! Note
+!!! note
     On Julia >= 1.9, you have to load the `Test` standard library to be able to use
     this function.
 """
