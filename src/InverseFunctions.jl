@@ -38,7 +38,7 @@ if isdefined(Base, :get_extension) && isdefined(Base.Experimental, :register_err
     function __init__()
         Base.Experimental.register_error_hint(MethodError) do io, exc, _, _
             if exc.f === test_inverse &&
-                (Base.get_extension(InverseFunctions, :InverseFunctionsTest) === nothing)
+                (Base.get_extension(InverseFunctions, :InverseFunctionsTestExt) === nothing)
                 print(io, "\nDid you forget to load Test?")
             end
         end
