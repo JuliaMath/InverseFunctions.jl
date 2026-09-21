@@ -3,7 +3,7 @@ module InverseFunctionsTestExt
 using Test: @test, @testset
 using InverseFunctions: InverseFunctions, inverse
 
-function InverseFunctions.test_inverse(f, x; compare=isapprox, kwargs...)
+function InverseFunctions._test_inverse(f, x; compare=isapprox, kwargs...)
     @testset "test_inverse: $f with input $x" begin
         y = f(x)
         inverse_f = inverse(f)

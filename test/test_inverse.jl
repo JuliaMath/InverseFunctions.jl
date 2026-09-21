@@ -44,21 +44,23 @@ end
 end
 
 @testset "test_inverse" begin
+    @test !isdefined(InverseFunctions, :__init__)
+
     err = try
         InverseFunctions.test_inverse(identity)
     catch e
         e
     end
     @test err isa MethodError
-    @test !occursin("Did you forget to load Test?", sprint(showerror, err))
+    @test !occursin("requires the Test standard library", sprint(showerror, err))
 
-    # Test can't be unloaded, so the hint itself is checked in a subprocess
+    # Test can't be unloaded, so the missing-Test error is checked in a subprocess
     if isdefined(Base, :get_extension)
         script = "using InverseFunctions; InverseFunctions.test_inverse(identity, 1)"
         cmd = `$(Base.julia_cmd()) --startup-file=no --project=$(Base.active_project()) -e $script`
         output = IOBuffer()
         run(pipeline(ignorestatus(cmd); stdout=output, stderr=output))
-        @test occursin("Did you forget to load Test?", String(take!(output)))
+        @test occursin("ArgumentError: InverseFunctions.test_inverse requires the Test standard library", String(take!(output)))
     end
 end
 
