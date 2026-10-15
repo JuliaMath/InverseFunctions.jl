@@ -44,6 +44,8 @@ end
 end
 
 @testset "test_inverse" begin
+    @test hasmethod(InverseFunctions.test_inverse, Tuple{Any,Any})
+
     err = try
         InverseFunctions.test_inverse(identity)
     catch e
@@ -52,13 +54,19 @@ end
     @test err isa MethodError
     @test !occursin("Did you forget to load Test?", sprint(showerror, err))
 
-    # Test can't be unloaded, so the hint itself is checked in a subprocess
+    # Test can't be unloaded, so the behaviour without it is checked in a subprocess
     if isdefined(Base, :get_extension)
-        script = "using InverseFunctions; InverseFunctions.test_inverse(identity, 1)"
+        script = """
+            using InverseFunctions
+            println("hasmethod: ", hasmethod(InverseFunctions.test_inverse, Tuple{Any,Any}))
+            InverseFunctions.test_inverse(identity, 1)
+            """
         cmd = `$(Base.julia_cmd()) --startup-file=no --project=$(Base.active_project()) -e $script`
         output = IOBuffer()
         run(pipeline(ignorestatus(cmd); stdout=output, stderr=output))
-        @test occursin("Did you forget to load Test?", String(take!(output)))
+        str = String(take!(output))
+        @test occursin("hasmethod: false", str)
+        @test occursin("Did you forget to load Test?", str)
     end
 end
 
